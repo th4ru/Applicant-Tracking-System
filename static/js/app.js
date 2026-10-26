@@ -1,4 +1,4 @@
-// TalentFlow ATS - Recruiter Workspace Core Engine
+// TalentFlow ATS - Modern Recruiter Workspace Core Engine
 
 let state = {
   currentView: 'table', // 'table', 'kanban', 'analytics'
@@ -52,7 +52,7 @@ async function loadJobs() {
     jobs.forEach(job => {
       const opt = document.createElement('option');
       opt.value = job.id;
-      opt.textContent = `${job.title} (${job.total_candidates || 0})`;
+      opt.textContent = `${job.title} (${job.total_candidates || 0} applicants)`;
       selector.appendChild(opt);
 
       const modalOpt = document.createElement('option');
@@ -61,7 +61,7 @@ async function loadJobs() {
       modalJobSelect.appendChild(modalOpt);
     });
   } catch (err) {
-    showToast('Failed to load jobs requisition list', 'error');
+    showToast('Failed to load job requisitions', 'error');
   }
 }
 
@@ -98,7 +98,7 @@ async function loadCandidates() {
 
 function updateCountsSummary() {
   const summaryEl = document.getElementById('candidateCountSummary');
-  summaryEl.textContent = `${state.pagination.total} Applicants Found`;
+  summaryEl.textContent = `${state.pagination.total} Applicants Screened`;
 }
 
 // ==================== VIEW SWITCHING ====================
@@ -111,9 +111,9 @@ function switchView(viewName) {
     const btn = document.getElementById(`viewTab${v}`);
     const isActive = v.toLowerCase() === viewName;
     if (isActive) {
-      btn.className = 'px-3 py-1 rounded-md font-medium text-white bg-slate-800 shadow-sm transition flex items-center gap-1.5';
+      btn.className = 'px-3.5 py-1.5 rounded-lg font-semibold text-white bg-slate-800 shadow-sm transition flex items-center gap-2';
     } else {
-      btn.className = 'px-3 py-1 rounded-md font-medium text-slate-400 hover:text-white transition flex items-center gap-1.5';
+      btn.className = 'px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition flex items-center gap-2';
     }
   });
 
@@ -129,7 +129,7 @@ function switchView(viewName) {
   }
 }
 
-// ==================== TRIAGE TABLE RENDERING ====================
+// ==================== TRIAGE TABLE RENDERING (SPACIOUS & ELEGANT) ====================
 
 function renderTable() {
   const tbody = document.getElementById('candidatesTableBody');
@@ -138,11 +138,13 @@ function renderTable() {
   if (state.candidates.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="10" class="py-12 text-center text-slate-500">
-          <div class="max-w-xs mx-auto space-y-2">
-            <svg class="w-8 h-8 mx-auto text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <p class="font-medium text-slate-400">No applicants match your filters</p>
-            <p class="text-[11px] text-slate-500">Try widening your search keywords, score thresholds, or reset demo data.</p>
+        <td colspan="10" class="py-16 text-center text-slate-500">
+          <div class="max-w-sm mx-auto space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-slate-800/80 border border-slate-700/80 flex items-center justify-center mx-auto text-slate-400">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <p class="font-bold text-sm text-slate-300">No applicants match your active criteria</p>
+            <p class="text-xs text-slate-400 leading-relaxed">Try clearing search terms, adjusting score thresholds, or click "Reset Demo Data" in the top bar.</p>
           </div>
         </td>
       </tr>
@@ -153,69 +155,76 @@ function renderTable() {
   state.candidates.forEach((c, index) => {
     const isSelected = state.selectedCandidateIds.has(c.id);
     const tr = document.createElement('tr');
-    tr.className = `border-b border-slate-800/40 hover:bg-slate-800/40 transition cursor-pointer group ${isSelected ? 'bg-brand-950/20' : ''}`;
+    tr.className = `border-b border-slate-800/40 hover:bg-slate-800/50 transition cursor-pointer group ${isSelected ? 'bg-brand-950/25' : ''}`;
     
-    // Clicking row opens quick drawer (unless clicking checkbox/button)
+    // Row click opens drawer
     tr.addEventListener('click', (e) => {
       if (e.target.closest('input') || e.target.closest('button') || e.target.closest('select')) return;
       openCandidateDrawer(c.id, index);
     });
 
     const matchBadgeClass = c.match_score >= 85 ? 'badge-match-high' : (c.match_score >= 70 ? 'badge-match-med' : 'badge-match-low');
+    const matchLabel = c.match_score >= 85 ? 'Top Fit' : (c.match_score >= 70 ? 'Strong' : 'Moderate');
     const stageClass = `stage-${c.stage}`;
     const formattedStage = c.stage.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
 
+    const initials = c.name.split(' ').map(n=>n[0]).join('').slice(0, 2);
+
     tr.innerHTML = `
-      <td class="py-2.5 px-3 text-center">
-        <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectCandidate(${c.id}, this.checked)" class="rounded bg-slate-800 border-slate-700 text-brand-600 focus:ring-0 cursor-pointer">
+      <td class="py-4 px-4 text-center">
+        <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectCandidate(${c.id}, this.checked)" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-brand-600 focus:ring-0 cursor-pointer">
       </td>
-      <td class="py-2.5 px-3 text-center">
-        <button onclick="toggleStar(${c.id}, event)" class="${c.starred ? 'text-amber-400' : 'text-slate-600 hover:text-amber-400'} transition text-sm">
+      <td class="py-4 px-3 text-center">
+        <button onclick="toggleStar(${c.id}, event)" class="${c.starred ? 'text-amber-400 scale-110' : 'text-slate-600 hover:text-amber-400'} transition text-base leading-none">
           ★
         </button>
       </td>
-      <td class="py-2.5 px-4 font-medium">
-        <div class="flex items-center space-x-2">
-          <div class="w-6 h-6 rounded-full bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-300 uppercase">
-            ${c.name.split(' ').map(n=>n[0]).join('')}
+      <td class="py-4 px-5">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-800 to-indigo-950 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-200 uppercase tracking-wider shrink-0 shadow-sm">
+            ${initials}
           </div>
-          <div>
-            <span class="text-slate-100 font-semibold text-xs group-hover:text-brand-400 transition">${c.name}</span>
-            <div class="text-[11px] text-slate-400">${c.current_title || 'Software Engineer'} ${c.current_company ? '@ ' + c.current_company : ''}</div>
+          <div class="min-w-0">
+            <span class="text-slate-100 font-bold text-xs tracking-tight group-hover:text-brand-300 transition block truncate">${c.name}</span>
+            <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5 truncate">
+              <span>${c.current_title || 'Software Engineer'}</span>
+              ${c.current_company ? `<span class="text-slate-600">•</span><span class="text-slate-400 font-medium">${c.current_company}</span>` : ''}
+            </div>
           </div>
         </div>
       </td>
-      <td class="py-2.5 px-3">
-        <span class="px-2 py-0.5 rounded-full font-mono text-[11px] font-bold ${matchBadgeClass}">
-          ${c.match_score}%
-        </span>
-      </td>
-      <td class="py-2.5 px-3 text-slate-300 max-w-[150px] truncate" title="${c.job_title}">
-        ${c.job_title}
-      </td>
-      <td class="py-2.5 px-3 font-mono text-slate-300">
-        ${c.years_of_experience} yrs
-      </td>
-      <td class="py-2.5 px-4 max-w-[200px]">
-        <div class="flex flex-wrap gap-1 overflow-hidden h-5">
-          ${(c.skills || []).slice(0, 3).map(s => `<span class="px-1.5 py-0.2 rounded bg-slate-800/80 text-slate-300 text-[10px] font-mono border border-slate-700/60">${s}</span>`).join('')}
-          ${(c.skills || []).length > 3 ? `<span class="text-[10px] text-slate-500 font-mono">+${(c.skills || []).length - 3}</span>` : ''}
+      <td class="py-4 px-4">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full font-mono text-[11px] font-bold ${matchBadgeClass}">
+          <span>${c.match_score}%</span>
+          <span class="text-[10px] uppercase font-sans font-semibold opacity-90">• ${matchLabel}</span>
         </div>
       </td>
-      <td class="py-2.5 px-3">
-        <span class="px-2 py-0.5 rounded-md text-[11px] font-medium ${stageClass}">
+      <td class="py-4 px-4 text-slate-300 max-w-[170px] truncate" title="${c.job_title}">
+        <span class="text-xs font-medium text-slate-300">${c.job_title}</span>
+      </td>
+      <td class="py-4 px-4 font-mono text-xs text-slate-300 whitespace-nowrap">
+        <span class="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60">${c.years_of_experience} yrs</span>
+      </td>
+      <td class="py-4 px-5 max-w-[220px]">
+        <div class="flex flex-wrap gap-1.5 overflow-hidden h-6">
+          ${(c.skills || []).slice(0, 3).map(s => `<span class="px-2 py-0.5 rounded-md bg-slate-800/90 text-slate-200 text-[11px] font-medium border border-slate-700/80 whitespace-nowrap">${s}</span>`).join('')}
+          ${(c.skills || []).length > 3 ? `<span class="text-[10px] text-slate-400 font-mono self-center font-bold">+${(c.skills || []).length - 3}</span>` : ''}
+        </div>
+      </td>
+      <td class="py-4 px-4 whitespace-nowrap">
+        <span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${stageClass}">
           ${formattedStage}
         </span>
       </td>
-      <td class="py-2.5 px-3 text-slate-400 text-[11px] font-mono whitespace-nowrap">
+      <td class="py-4 px-4 text-slate-400 text-xs font-mono whitespace-nowrap">
         ${c.applied_at || ''}
       </td>
-      <td class="py-2.5 px-4 text-right space-x-1.5 whitespace-nowrap">
-        <button onclick="quickAdvance(${c.id}, event)" title="Advance Candidate" class="px-2 py-1 rounded bg-slate-800 hover:bg-brand-600 text-slate-300 hover:text-white transition text-[11px] font-medium">
-          Advance
+      <td class="py-4 px-5 text-right space-x-2 whitespace-nowrap">
+        <button onclick="openCandidateDrawer(${c.id}, ${index})" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 shadow-sm">
+          Review
         </button>
-        <button onclick="quickReject(${c.id}, event)" title="Reject" class="px-1.5 py-1 rounded bg-slate-800 hover:bg-red-950 hover:text-red-300 text-slate-400 transition text-[11px]">
-          ✕
+        <button onclick="quickAdvance(${c.id}, event)" title="Advance Candidate" class="px-3 py-1.5 rounded-lg bg-brand-600/90 hover:bg-brand-600 text-white transition text-xs font-semibold shadow-sm">
+          Advance →
         </button>
       </td>
     `;
@@ -223,14 +232,14 @@ function renderTable() {
   });
 }
 
-// ==================== KANBAN BOARD RENDERING ====================
+// ==================== KANBAN BOARD RENDERING (SPACIOUS COLUMNS) ====================
 
 const KANBAN_STAGES = [
-  { id: 'new', label: 'New / Applied', color: 'border-slate-700' },
+  { id: 'new', label: 'New / Applied', color: 'border-slate-700/80' },
   { id: 'screening', label: 'Screening', color: 'border-sky-500/40' },
   { id: 'phone_screen', label: 'Phone Screen', color: 'border-indigo-500/40' },
   { id: 'interview', label: 'Technical Interview', color: 'border-purple-500/40' },
-  { id: 'offer', label: 'Offer', color: 'border-emerald-500/40' },
+  { id: 'offer', label: 'Offer Extended', color: 'border-emerald-500/40' },
   { id: 'rejected', label: 'Rejected', color: 'border-red-500/40' }
 ];
 
@@ -238,7 +247,6 @@ async function renderKanbanBoard() {
   const container = document.getElementById('kanbanBoardColumns');
   container.innerHTML = '';
 
-  // In Kanban, we fetch candidates without pagination limit for the selected role
   let kanbanCandidates = state.candidates;
   if (state.pagination.total > state.candidates.length) {
     try {
@@ -254,37 +262,37 @@ async function renderKanbanBoard() {
   KANBAN_STAGES.forEach(col => {
     const colCandidates = kanbanCandidates.filter(c => c.stage === col.id);
     const colDiv = document.createElement('div');
-    colDiv.className = `w-72 bg-slate-950/70 border ${col.color} rounded-xl flex flex-col h-full max-h-full overflow-hidden shadow-sm`;
+    colDiv.className = `w-80 bg-slate-950/80 border ${col.color} rounded-2xl flex flex-col h-full max-h-full overflow-hidden shadow-card`;
 
     colDiv.innerHTML = `
-      <div class="p-3 border-b border-slate-800 flex items-center justify-between bg-slate-900/50">
-        <div class="flex items-center space-x-2">
-          <span class="text-xs font-bold text-white tracking-wide">${col.label}</span>
-          <span class="w-5 h-5 rounded-full bg-slate-800 text-slate-300 font-mono text-[10px] font-bold flex items-center justify-center">${colCandidates.length}</span>
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+        <div class="flex items-center space-x-2.5">
+          <span class="text-xs font-bold text-white tracking-wide uppercase font-mono">${col.label}</span>
+          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-200 font-mono text-xs font-bold flex items-center justify-center">${colCandidates.length}</span>
         </div>
       </div>
-      <div class="flex-1 overflow-y-auto p-2.5 space-y-2.5" id="kanban-col-${col.id}"></div>
+      <div class="flex-1 overflow-y-auto p-3.5 space-y-3.5" id="kanban-col-${col.id}"></div>
     `;
 
     const cardsContainer = colDiv.querySelector(`#kanban-col-${col.id}`);
     
     colCandidates.forEach(cand => {
       const card = document.createElement('div');
-      card.className = 'bg-slate-900 border border-slate-800 hover:border-brand-500/60 rounded-lg p-3 space-y-2 cursor-pointer transition shadow-sm hover:shadow-md';
+      card.className = 'bg-slate-900 border border-slate-800 hover:border-brand-500/70 rounded-xl p-4 space-y-2.5 cursor-pointer transition shadow-sm hover:shadow-card-hover';
       card.onclick = () => openCandidateDrawer(cand.id);
 
       const matchBadgeClass = cand.match_score >= 85 ? 'badge-match-high' : (cand.match_score >= 70 ? 'badge-match-med' : 'badge-match-low');
 
       card.innerHTML = `
         <div class="flex items-center justify-between">
-          <span class="font-semibold text-xs text-white hover:text-brand-400 transition">${cand.name}</span>
-          <span class="px-1.5 py-0.2 rounded-full font-mono text-[10px] font-bold ${matchBadgeClass}">${cand.match_score}%</span>
+          <span class="font-bold text-xs text-white hover:text-brand-300 transition">${cand.name}</span>
+          <span class="px-2 py-0.5 rounded-full font-mono text-[10px] font-bold ${matchBadgeClass}">${cand.match_score}%</span>
         </div>
         <div class="text-[11px] text-slate-400 truncate">${cand.current_title || 'Engineer'} ${cand.current_company ? '@ ' + cand.current_company : ''}</div>
-        <div class="flex flex-wrap gap-1">
-          ${(cand.skills || []).slice(0, 3).map(s => `<span class="px-1 rounded bg-slate-800 text-slate-300 text-[9px] font-mono">${s}</span>`).join('')}
+        <div class="flex flex-wrap gap-1.5">
+          ${(cand.skills || []).slice(0, 3).map(s => `<span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-[10px] font-medium border border-slate-700/60">${s}</span>`).join('')}
         </div>
-        <div class="flex items-center justify-between pt-1 border-t border-slate-800/80 text-[10px] text-slate-500 font-mono">
+        <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono">
           <span>${cand.years_of_experience} yrs exp</span>
           <span>${cand.applied_at}</span>
         </div>
@@ -296,7 +304,7 @@ async function renderKanbanBoard() {
   });
 }
 
-// ==================== CANDIDATE PROFILE DRAWER ====================
+// ==================== CANDIDATE PROFILE DRAWER (SPACIOUS & STRUCTURED) ====================
 
 async function openCandidateDrawer(candidateId, index = -1) {
   try {
@@ -305,11 +313,13 @@ async function openCandidateDrawer(candidateId, index = -1) {
     state.activeCandidate = candidate;
     state.activeCandidateIndex = index !== -1 ? index : state.candidates.findIndex(c => c.id === candidateId);
 
-    // Populate Drawer Header
+    // Populate Header
+    const initials = candidate.name.split(' ').map(n=>n[0]).join('').slice(0, 2);
+    document.getElementById('drawerAvatarInitials').textContent = initials;
     document.getElementById('drawerCandidateName').textContent = candidate.name;
-    document.getElementById('drawerCandidateSubtitle').textContent = `${candidate.current_title || 'Software Engineer'} ${candidate.current_company ? '@ ' + candidate.current_company : ''} • Applied for ${candidate.job_title}`;
+    document.getElementById('drawerCandidateSubtitle').textContent = `${candidate.current_title || 'Software Engineer'} ${candidate.current_company ? '@ ' + candidate.current_company : ''} • Target: ${candidate.job_title}`;
     
-    // Star
+    // Star Status
     updateDrawerStarUI(candidate.starred);
 
     // Stage dropdown
@@ -318,40 +328,47 @@ async function openCandidateDrawer(candidateId, index = -1) {
     // AI Tab
     document.getElementById('drawerMatchScoreVal').textContent = `${candidate.match_score}%`;
     const badgeEl = document.getElementById('drawerMatchBadge');
-    badgeEl.className = `text-[11px] px-2 py-0.5 rounded-full font-medium ${candidate.match_score >= 85 ? 'badge-match-high' : (candidate.match_score >= 70 ? 'badge-match-med' : 'badge-match-low')}`;
-    badgeEl.textContent = candidate.match_score >= 85 ? 'High Match' : (candidate.match_score >= 70 ? 'Strong Fit' : 'Moderate Match');
+    badgeEl.className = `text-xs px-3 py-1 rounded-full font-bold ${candidate.match_score >= 85 ? 'badge-match-high' : (candidate.match_score >= 70 ? 'badge-match-med' : 'badge-match-low')}`;
+    badgeEl.textContent = candidate.match_score >= 85 ? 'Top Tier Match' : (candidate.match_score >= 70 ? 'Strong Fit' : 'Moderate Match');
     document.getElementById('drawerAIHeadline').textContent = candidate.ai_headline || '';
 
     // Pros
     const prosList = document.getElementById('drawerProsList');
     prosList.innerHTML = (candidate.ai_pros || []).map(p => `
-      <li class="flex items-start gap-1.5"><span class="text-emerald-400 font-bold">•</span> <span>${p}</span></li>
+      <li class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-950/40 border border-emerald-950/50">
+        <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">✓</span>
+        <span>${p}</span>
+      </li>
     `).join('');
 
     // Cons
     const consList = document.getElementById('drawerConsList');
     consList.innerHTML = (candidate.ai_cons || []).map(c => `
-      <li class="flex items-start gap-1.5"><span class="text-amber-400 font-bold">•</span> <span>${c}</span></li>
+      <li class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-950/40 border border-amber-950/50">
+        <span class="w-4 h-4 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">!</span>
+        <span>${c}</span>
+      </li>
     `).join('');
 
     // Questions
     const questionsList = document.getElementById('drawerQuestionsList');
     questionsList.innerHTML = (candidate.ai_questions || []).map((q, idx) => `
-      <li class="p-2 rounded bg-slate-950/60 border border-slate-800">
-        <span class="font-mono text-[10px] text-brand-400 font-bold">Q${idx+1}:</span> <span>${q}</span>
+      <li class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
+        <span class="font-mono text-xs text-brand-400 font-bold block">Interview Question ${idx+1}</span>
+        <p class="text-slate-200 text-xs leading-relaxed font-medium">${q}</p>
       </li>
     `).join('');
 
-    // Metadata
+    // Quick Metadata
     document.getElementById('drawerEmailLink').textContent = candidate.email;
     document.getElementById('drawerEmailLink').href = `mailto:${candidate.email}`;
     document.getElementById('drawerPhone').textContent = candidate.phone || 'N/A';
     document.getElementById('drawerLocation').textContent = candidate.location || 'Remote';
-    document.getElementById('drawerExp').textContent = `${candidate.years_of_experience} years`;
+    document.getElementById('drawerExp').textContent = `${candidate.years_of_experience} years professional experience`;
     document.getElementById('drawerEducation').textContent = candidate.education || 'N/A';
 
-    // Resume Tab
-    document.getElementById('drawerRawResume').textContent = candidate.raw_resume || 'No resume text provided.';
+    // Resume Tab (Structured Formatted View)
+    renderFormattedResume(candidate);
 
     // Notes Tab
     document.getElementById('drawerNotesCount').textContent = (candidate.notes || []).length;
@@ -360,13 +377,52 @@ async function openCandidateDrawer(candidateId, index = -1) {
     // Activity Tab
     renderDrawerActivity(candidate.activity_logs || []);
 
-    // Show Drawer
+    // Slide in
     const drawer = document.getElementById('candidateDrawer');
     drawer.classList.remove('hidden', 'translate-x-full');
     drawer.classList.add('translate-x-0');
   } catch (err) {
-    showToast('Failed to load candidate profile', 'error');
+    showToast('Failed to open candidate profile', 'error');
   }
+}
+
+function renderFormattedResume(candidate) {
+  const container = document.getElementById('drawerFormattedResume');
+  const raw = candidate.raw_resume || '';
+
+  container.innerHTML = `
+    <!-- Executive Header Card -->
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-card space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-white">${candidate.name}</h3>
+        <span class="px-2.5 py-1 rounded-lg bg-brand-500/20 text-brand-300 font-mono text-xs font-semibold">${candidate.years_of_experience} Years Exp</span>
+      </div>
+      <p class="text-xs text-slate-300 font-medium">${candidate.current_title} @ <strong class="text-white">${candidate.current_company}</strong></p>
+      <div class="pt-2 border-t border-slate-800 flex flex-wrap gap-2">
+        <span class="px-2 py-1 rounded bg-slate-950 text-slate-400 text-xs">📍 ${candidate.location}</span>
+        <span class="px-2 py-1 rounded bg-slate-950 text-slate-400 text-xs">✉️ ${candidate.email}</span>
+        <span class="px-2 py-1 rounded bg-slate-950 text-slate-400 text-xs">🎓 ${candidate.education}</span>
+      </div>
+    </div>
+
+    <!-- Technical Stack Card -->
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-card space-y-3">
+      <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">Verified Skills & Tools</h4>
+      <div class="flex flex-wrap gap-2">
+        ${(candidate.skills || []).map(s => `
+          <span class="px-3 py-1 rounded-xl bg-slate-950 border border-slate-700 text-slate-200 text-xs font-medium">${s}</span>
+        `).join('')}
+      </div>
+    </div>
+
+    <!-- Career Experience Narrative Card -->
+    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-card space-y-4">
+      <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">Resume Document Overview</h4>
+      <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">
+        ${raw}
+      </div>
+    </div>
+  `;
 }
 
 function closeDrawer() {
@@ -397,10 +453,10 @@ function switchDrawerTab(tabName) {
     const btn = document.getElementById(`drawerTab${t.charAt(0).toUpperCase() + t.slice(1)}`);
     const content = document.getElementById(`drawerContent${t.charAt(0).toUpperCase() + t.slice(1)}`);
     if (t === tabName) {
-      btn.className = 'py-2.5 px-3 font-semibold text-brand-400 border-b-2 border-brand-500 transition';
+      btn.className = 'py-3 px-4 font-bold text-brand-400 border-b-2 border-brand-500 transition flex items-center gap-2';
       content.classList.remove('hidden');
     } else {
-      btn.className = 'py-2.5 px-3 font-medium text-slate-400 hover:text-white transition';
+      btn.className = 'py-3 px-4 font-semibold text-slate-400 hover:text-white transition flex items-center gap-2';
       content.classList.add('hidden');
     }
   });
@@ -410,10 +466,10 @@ function updateDrawerStarUI(isStarred) {
   const icon = document.getElementById('drawerStarIcon');
   if (isStarred) {
     icon.classList.add('text-amber-400', 'fill-amber-400');
-    icon.classList.remove('text-slate-400');
+    icon.classList.remove('text-slate-500');
   } else {
     icon.classList.remove('text-amber-400', 'fill-amber-400');
-    icon.classList.add('text-slate-400');
+    icon.classList.add('text-slate-500');
   }
 }
 
@@ -457,7 +513,7 @@ async function rescoreCurrentCandidate() {
     const res = await fetch(`/api/candidates/${state.activeCandidate.id}/rescore`, { method: 'POST' });
     const data = await res.json();
     if (data.success) {
-      showToast('Candidate rescored successfully', 'success');
+      showToast('Candidate rescored against requisition', 'success');
       await openCandidateDrawer(state.activeCandidate.id, state.activeCandidateIndex);
       loadCandidates();
     }
@@ -518,7 +574,7 @@ async function toggleStar(candidateId, event) {
       renderTable();
     }
   } catch (err) {
-    showToast('Failed to update star', 'error');
+    showToast('Failed to toggle star', 'error');
   }
 }
 
@@ -529,9 +585,9 @@ function setNoteRating(stars) {
   const buttons = document.querySelectorAll('#starRatingSelect button');
   buttons.forEach((btn, idx) => {
     if (idx < stars) {
-      btn.className = 'star-rating text-amber-400 text-base';
+      btn.className = 'star-rating text-amber-400 text-lg transition';
     } else {
-      btn.className = 'star-rating text-slate-600 hover:text-amber-400 text-base';
+      btn.className = 'star-rating text-slate-600 hover:text-amber-400 text-lg transition';
     }
   });
 }
@@ -572,20 +628,20 @@ async function submitCandidateNote() {
 function renderDrawerNotes(notes) {
   const container = document.getElementById('drawerNotesList');
   if (notes.length === 0) {
-    container.innerHTML = '<p class="text-xs text-slate-500 italic py-2">No notes added yet for this applicant.</p>';
+    container.innerHTML = '<p class="text-xs text-slate-500 italic py-4 text-center">No review notes recorded yet for this applicant.</p>';
     return;
   }
   container.innerHTML = notes.map(n => `
-    <div class="p-3 rounded-lg bg-slate-900 border border-slate-800 space-y-1.5 text-xs">
+    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2.5 text-xs shadow-card">
       <div class="flex items-center justify-between">
-        <span class="font-semibold text-slate-200">${n.author}</span>
-        <span class="text-[10px] text-slate-500 font-mono">${n.created_at}</span>
+        <span class="font-bold text-slate-200 text-xs">${n.author}</span>
+        <span class="text-[11px] text-slate-500 font-mono">${n.created_at}</span>
       </div>
-      <div class="flex items-center gap-2">
-        <span class="px-1.5 py-0.2 rounded bg-slate-800 text-brand-400 font-mono text-[10px]">${n.category}</span>
+      <div class="flex items-center gap-2.5">
+        <span class="px-2 py-0.5 rounded-md bg-slate-950 text-brand-300 font-mono text-[10px] font-semibold border border-slate-800">${n.category}</span>
         ${n.rating ? `<span class="text-amber-400 font-bold">${'★'.repeat(n.rating)}</span>` : ''}
       </div>
-      <p class="text-slate-300 leading-relaxed">${n.text}</p>
+      <p class="text-slate-300 leading-relaxed font-normal">${n.text}</p>
     </div>
   `).join('');
 }
@@ -593,17 +649,17 @@ function renderDrawerNotes(notes) {
 function renderDrawerActivity(activities) {
   const container = document.getElementById('drawerActivityTimeline');
   if (activities.length === 0) {
-    container.innerHTML = '<p class="text-xs text-slate-500 italic py-2">No activity recorded yet.</p>';
+    container.innerHTML = '<p class="text-xs text-slate-500 italic py-4">No audit activity logged yet.</p>';
     return;
   }
   container.innerHTML = activities.map(a => `
-    <div class="relative pb-3">
-      <span class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-brand-500 ring-4 ring-slate-950"></span>
+    <div class="relative pb-5">
+      <span class="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full bg-brand-500 ring-4 ring-slate-950"></span>
       <div class="flex items-center justify-between">
-        <span class="font-semibold text-white">${a.action}</span>
-        <span class="text-[10px] text-slate-500 font-mono">${a.timestamp}</span>
+        <span class="font-bold text-white text-xs">${a.action}</span>
+        <span class="text-[11px] text-slate-500 font-mono">${a.timestamp}</span>
       </div>
-      <p class="text-slate-400 text-[11px] mt-0.5">${a.details || ''} • <span class="text-slate-500">${a.actor}</span></p>
+      <p class="text-slate-400 text-xs mt-1">${a.details || ''} • <span class="text-slate-500 font-medium">${a.actor}</span></p>
     </div>
   `).join('');
 }
@@ -676,7 +732,7 @@ async function executeBulkStageMove() {
       await loadCandidates();
     }
   } catch (err) {
-    showToast('Failed bulk stage move', 'error');
+    showToast('Failed bulk stage transition', 'error');
   }
 }
 
@@ -742,18 +798,13 @@ async function executeBulkEmailSend() {
     const res = await fetch('/api/candidates/bulk-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        candidate_ids: ids,
-        template,
-        subject,
-        body
-      })
+      body: JSON.stringify({ candidate_ids: ids, template, subject, body })
     });
     const data = await res.json();
     if (data.success) {
       closeBulkEmailModal();
       clearSelection();
-      showToast(`Dispatched ${data.sent_count} automated notifications`, 'success');
+      showToast(`Dispatched ${data.sent_count} automated candidate notifications`, 'success');
       loadCandidates();
     }
   } catch (err) {
@@ -793,9 +844,9 @@ function toggleStarredFilter() {
   state.filters.starred = !state.filters.starred;
   const btn = document.getElementById('starredToggleBtn');
   if (state.filters.starred) {
-    btn.className = 'px-2.5 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-300 transition flex items-center gap-1';
+    btn.className = 'px-3.5 py-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 transition flex items-center gap-1.5 font-semibold';
   } else {
-    btn.className = 'px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-slate-400 hover:text-amber-400 transition flex items-center gap-1';
+    btn.className = 'px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-amber-400 transition flex items-center gap-1.5 font-medium shadow-sm';
   }
   state.pagination.page = 1;
   loadCandidates();
@@ -854,13 +905,13 @@ async function loadAnalytics() {
     funnelContainer.innerHTML = data.stages_funnel.map(s => {
       const pct = Math.round((s.count / maxFunnel) * 100);
       return `
-        <div class="space-y-1">
+        <div class="space-y-1.5">
           <div class="flex justify-between text-xs">
-            <span class="text-slate-300 font-medium">${s.label}</span>
-            <span class="font-mono text-slate-400">${s.count} candidates</span>
+            <span class="text-slate-200 font-semibold">${s.label}</span>
+            <span class="font-mono text-slate-400 font-medium">${s.count} candidates</span>
           </div>
-          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-            <div class="bg-brand-500 h-2 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+          <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+            <div class="bg-gradient-to-r from-brand-600 to-indigo-500 h-3 rounded-full transition-all duration-700 shadow-sm" style="width: ${pct}%"></div>
           </div>
         </div>
       `;
@@ -872,13 +923,13 @@ async function loadAnalytics() {
     scoreContainer.innerHTML = Object.entries(data.score_distribution).map(([bucket, count]) => {
       const pct = Math.round((count / maxScoreBucket) * 100);
       return `
-        <div class="space-y-1">
+        <div class="space-y-1.5">
           <div class="flex justify-between text-xs">
-            <span class="text-slate-300 font-medium">${bucket}</span>
-            <span class="font-mono text-slate-400">${count}</span>
+            <span class="text-slate-200 font-semibold">${bucket}</span>
+            <span class="font-mono text-slate-400 font-medium">${count}</span>
           </div>
-          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden">
-            <div class="bg-indigo-400 h-2 rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+          <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+            <div class="bg-gradient-to-r from-indigo-500 to-violet-500 h-3 rounded-full transition-all duration-700 shadow-sm" style="width: ${pct}%"></div>
           </div>
         </div>
       `;
@@ -887,9 +938,9 @@ async function loadAnalytics() {
     // Top skills
     const skillsContainer = document.getElementById('topSkillsPills');
     skillsContainer.innerHTML = (data.top_skills || []).map(s => `
-      <span class="px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 font-mono flex items-center gap-1.5">
+      <span class="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 font-mono flex items-center gap-2 shadow-sm">
         <span>${s.skill}</span>
-        <span class="px-1.5 py-0.2 rounded bg-slate-800 text-brand-400 text-[10px] font-bold">${s.count}</span>
+        <span class="px-2 py-0.5 rounded-md bg-slate-800 text-brand-300 text-[10px] font-bold border border-slate-700">${s.count}</span>
       </span>
     `).join('');
 
@@ -979,7 +1030,6 @@ async function submitNewCandidate() {
 
 function initKeyboardShortcuts() {
   window.addEventListener('keydown', (e) => {
-    // If inside input or textarea, ignore shortcuts except Escape
     const tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : '';
     if (tag === 'input' || tag === 'textarea') {
       if (e.key === 'Escape') {
@@ -1043,17 +1093,18 @@ function toggleKeyboardModal(forceState) {
 function showToast(message, type = 'info') {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
-  const bg = type === 'success' ? 'bg-emerald-950 border-emerald-800 text-emerald-200' :
-             type === 'error' ? 'bg-red-950 border-red-800 text-red-200' :
-             'bg-slate-900 border-slate-700 text-slate-200';
+  const bg = type === 'success' ? 'bg-emerald-950/90 border-emerald-700/80 text-emerald-100 shadow-emerald-950/50' :
+             type === 'error' ? 'bg-red-950/90 border-red-700/80 text-red-100 shadow-red-950/50' :
+             'bg-slate-900/90 border-slate-700/80 text-slate-100 shadow-slate-950/50';
 
-  toast.className = `${bg} border shadow-xl rounded-xl px-4 py-2.5 text-xs font-medium flex items-center space-x-2 animate-fade-in pointer-events-auto`;
+  toast.className = `${bg} border shadow-2xl rounded-2xl px-5 py-3 text-xs font-semibold flex items-center space-x-2.5 backdrop-blur-md animate-fade-in pointer-events-auto ring-1 ring-white/10`;
   toast.innerHTML = `<span>${message}</span>`;
   container.appendChild(toast);
 
   setTimeout(() => {
     toast.style.opacity = '0';
-    toast.style.transition = 'opacity 0.3s ease';
+    toast.style.transform = 'translateY(8px)';
+    toast.style.transition = 'all 0.3s ease';
     setTimeout(() => toast.remove(), 300);
   }, 3200);
 }
