@@ -23,12 +23,14 @@ let state = {
   activeCandidate: null,
   activeCandidateIndex: -1,
   activeDrawerTab: 'ai',
-  currentRatingValue: 0
+  currentRatingValue: 0,
+  currentTheme: 'dark'
 };
 
 // ==================== INITIALIZATION & LIFECYCLE ====================
 
 document.addEventListener('DOMContentLoaded', async () => {
+  initTheme();
   initKeyboardShortcuts();
   await loadJobs();
   await loadCandidates();
@@ -36,6 +38,64 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadAnalytics();
   }
 });
+
+// ==================== THEME MANAGEMENT (DARK / LIGHT MODE) ====================
+
+function initTheme() {
+  const savedTheme = localStorage.getItem('talentflow-theme') || (document.documentElement.classList.contains('light') ? 'light' : 'dark');
+  applyTheme(savedTheme, false);
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.classList.contains('dark');
+  const targetTheme = isDark ? 'light' : 'dark';
+  applyTheme(targetTheme, true);
+}
+
+function applyTheme(theme, notify = false) {
+  state.currentTheme = theme;
+  const isDark = theme === 'dark';
+  const html = document.documentElement;
+
+  if (isDark) {
+    html.classList.add('dark');
+    html.classList.remove('light');
+  } else {
+    html.classList.remove('dark');
+    html.classList.add('light');
+  }
+
+  localStorage.setItem('talentflow-theme', theme);
+  updateThemeUI(isDark);
+
+  if (notify) {
+    showToast(`Switched to ${isDark ? 'Dark 🌙' : 'Light ☀️'} mode`, 'info');
+  }
+}
+
+function updateThemeUI(isDark) {
+  // Sidebar elements
+  const sidebarIcon = document.getElementById('sidebarThemeIcon');
+  const sidebarLabel = document.getElementById('sidebarThemeLabel');
+  const sidebarBadge = document.getElementById('sidebarThemeBadge');
+
+  if (sidebarIcon) sidebarIcon.innerHTML = isDark ? '☀️' : '🌙';
+  if (sidebarLabel) sidebarLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+  if (sidebarBadge) {
+    sidebarBadge.textContent = isDark ? 'Dark' : 'Light';
+    sidebarBadge.className = isDark 
+      ? 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700'
+      : 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-200 text-slate-700 border border-slate-300';
+  }
+
+  // Top bar elements
+  const topIcon = document.getElementById('topThemeIcon');
+  const topLabel = document.getElementById('topThemeLabel');
+  if (topIcon) topIcon.innerHTML = isDark ? '☀️' : '🌙';
+  if (topLabel) topLabel.textContent = isDark ? 'Light' : 'Dark';
+}
+
+// ==================== JOBS & CANDIDATES API ====================
 
 async function loadJobs() {
   try {
@@ -110,13 +170,13 @@ function switchView(viewName) {
   ['Table', 'Kanban', 'Analytics'].forEach(v => {
     const btn = document.getElementById(`viewTab${v}`);
     const isActive = v.toLowerCase() === viewName;
+    const svg = btn ? btn.querySelector('svg') : null;
+
     if (isActive) {
-      btn.className = 'w-full px-3.5 py-2.5 rounded-xl font-semibold text-white bg-slate-800/90 border border-slate-700/80 shadow-sm transition flex items-center gap-3';
-      const svg = btn.querySelector('svg');
-      if (svg) svg.className = 'w-4 h-4 text-brand-400 shrink-0';
+      btn.className = 'w-full px-3.5 py-2.5 rounded-xl font-semibold text-brand-600 dark:text-white bg-brand-50 dark:bg-slate-800/90 border border-brand-200 dark:border-slate-700/80 shadow-sm transition flex items-center gap-3';
+      if (svg) svg.className = 'w-4 h-4 text-brand-500 dark:text-brand-400 shrink-0';
     } else {
-      btn.className = 'w-full px-3.5 py-2.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-900 transition flex items-center gap-3';
-      const svg = btn.querySelector('svg');
+      btn.className = 'w-full px-3.5 py-2.5 rounded-xl font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center gap-3';
       if (svg) svg.className = 'w-4 h-4 text-slate-400 shrink-0';
     }
   });
@@ -133,7 +193,7 @@ function switchView(viewName) {
   }
 }
 
-// ==================== TRIAGE TABLE RENDERING (SPACIOUS & ELEGANT) ====================
+// ==================== TRIAGE TABLE RENDERING ====================
 
 function renderTable() {
   const tbody = document.getElementById('candidatesTableBody');
@@ -144,11 +204,11 @@ function renderTable() {
       <tr>
         <td colspan="10" class="py-16 text-center text-slate-500">
           <div class="max-w-sm mx-auto space-y-3">
-            <div class="w-12 h-12 rounded-2xl bg-slate-800/80 border border-slate-700/80 flex items-center justify-center mx-auto text-slate-400">
+            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 flex items-center justify-center mx-auto text-slate-400">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
-            <p class="font-bold text-sm text-slate-300">No applicants match your active criteria</p>
-            <p class="text-xs text-slate-400 leading-relaxed">Try clearing search terms, adjusting score thresholds, or click "Reset Demo Data" in the top bar.</p>
+            <p class="font-bold text-sm text-slate-700 dark:text-slate-300">No applicants match your active criteria</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Try clearing search terms, adjusting score thresholds, or click "Reset Demo Data" in the left sidebar.</p>
           </div>
         </td>
       </tr>
@@ -159,7 +219,7 @@ function renderTable() {
   state.candidates.forEach((c, index) => {
     const isSelected = state.selectedCandidateIds.has(c.id);
     const tr = document.createElement('tr');
-    tr.className = `border-b border-slate-800/40 hover:bg-slate-800/50 transition cursor-pointer group ${isSelected ? 'bg-brand-950/25' : ''}`;
+    tr.className = `border-b border-slate-200/80 dark:border-slate-800/40 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition cursor-pointer group ${isSelected ? 'bg-brand-50/70 dark:bg-brand-950/25' : ''}`;
     
     // Row click opens drawer
     tr.addEventListener('click', (e) => {
@@ -176,23 +236,23 @@ function renderTable() {
 
     tr.innerHTML = `
       <td class="py-4 px-4 text-center">
-        <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectCandidate(${c.id}, this.checked)" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-brand-600 focus:ring-0 cursor-pointer">
+        <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSelectCandidate(${c.id}, this.checked)" class="w-4 h-4 rounded bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-0 cursor-pointer">
       </td>
       <td class="py-4 px-3 text-center">
-        <button onclick="toggleStar(${c.id}, event)" class="${c.starred ? 'text-amber-400 scale-110' : 'text-slate-600 hover:text-amber-400'} transition text-base leading-none">
+        <button onclick="toggleStar(${c.id}, event)" class="${c.starred ? 'text-amber-500 scale-110' : 'text-slate-400 dark:text-slate-600 hover:text-amber-500'} transition text-base leading-none">
           ★
         </button>
       </td>
       <td class="py-4 px-5">
         <div class="flex items-center space-x-3.5">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-800 to-indigo-950 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-200 uppercase tracking-wider shrink-0 shadow-sm">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-slate-200 to-indigo-100 dark:from-slate-800 dark:to-indigo-950 border border-slate-300 dark:border-slate-700 flex items-center justify-center text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider shrink-0 shadow-sm">
             ${initials}
           </div>
           <div class="min-w-0">
-            <span class="text-slate-100 font-bold text-xs tracking-tight group-hover:text-brand-300 transition block truncate">${c.name}</span>
-            <div class="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5 truncate">
+            <span class="text-slate-900 dark:text-slate-100 font-bold text-xs tracking-tight group-hover:text-brand-600 dark:group-hover:text-brand-300 transition block truncate">${c.name}</span>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5 truncate">
               <span>${c.current_title || 'Software Engineer'}</span>
-              ${c.current_company ? `<span class="text-slate-600">•</span><span class="text-slate-400 font-medium">${c.current_company}</span>` : ''}
+              ${c.current_company ? `<span class="text-slate-400 dark:text-slate-600">•</span><span class="font-medium">${c.current_company}</span>` : ''}
             </div>
           </div>
         </div>
@@ -203,15 +263,15 @@ function renderTable() {
           <span class="text-[10px] uppercase font-sans font-semibold opacity-90">• ${matchLabel}</span>
         </div>
       </td>
-      <td class="py-4 px-4 text-slate-300 max-w-[170px] truncate" title="${c.job_title}">
-        <span class="text-xs font-medium text-slate-300">${c.job_title}</span>
+      <td class="py-4 px-4 text-slate-700 dark:text-slate-300 max-w-[170px] truncate" title="${c.job_title}">
+        <span class="text-xs font-medium text-slate-700 dark:text-slate-300">${c.job_title}</span>
       </td>
-      <td class="py-4 px-4 font-mono text-xs text-slate-300 whitespace-nowrap">
-        <span class="px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60">${c.years_of_experience} yrs</span>
+      <td class="py-4 px-4 font-mono text-xs text-slate-700 dark:text-slate-300 whitespace-nowrap">
+        <span class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60">${c.years_of_experience} yrs</span>
       </td>
       <td class="py-4 px-5 max-w-[220px]">
         <div class="flex flex-wrap gap-1.5 overflow-hidden h-6">
-          ${(c.skills || []).slice(0, 3).map(s => `<span class="px-2 py-0.5 rounded-md bg-slate-800/90 text-slate-200 text-[11px] font-medium border border-slate-700/80 whitespace-nowrap">${s}</span>`).join('')}
+          ${(c.skills || []).slice(0, 3).map(s => `<span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 text-[11px] font-medium border border-slate-200 dark:border-slate-700/80 whitespace-nowrap">${s}</span>`).join('')}
           ${(c.skills || []).length > 3 ? `<span class="text-[10px] text-slate-400 font-mono self-center font-bold">+${(c.skills || []).length - 3}</span>` : ''}
         </div>
       </td>
@@ -220,14 +280,14 @@ function renderTable() {
           ${formattedStage}
         </span>
       </td>
-      <td class="py-4 px-4 text-slate-400 text-xs font-mono whitespace-nowrap">
+      <td class="py-4 px-4 text-slate-500 dark:text-slate-400 text-xs font-mono whitespace-nowrap">
         ${c.applied_at || ''}
       </td>
       <td class="py-4 px-5 text-right space-x-2 whitespace-nowrap">
-        <button onclick="openCandidateDrawer(${c.id}, ${index})" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition border border-slate-700 shadow-sm">
+        <button onclick="openCandidateDrawer(${c.id}, ${index})" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold transition border border-slate-200 dark:border-slate-700 shadow-sm">
           Review
         </button>
-        <button onclick="quickAdvance(${c.id}, event)" title="Advance Candidate" class="px-3 py-1.5 rounded-lg bg-brand-600/90 hover:bg-brand-600 text-white transition text-xs font-semibold shadow-sm">
+        <button onclick="quickAdvance(${c.id}, event)" title="Advance Candidate" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white transition text-xs font-semibold shadow-sm">
           Advance →
         </button>
       </td>
@@ -236,15 +296,15 @@ function renderTable() {
   });
 }
 
-// ==================== KANBAN BOARD RENDERING (SPACIOUS COLUMNS) ====================
+// ==================== KANBAN BOARD RENDERING ====================
 
 const KANBAN_STAGES = [
-  { id: 'new', label: 'New / Applied', color: 'border-slate-700/80' },
-  { id: 'screening', label: 'Screening', color: 'border-sky-500/40' },
-  { id: 'phone_screen', label: 'Phone Screen', color: 'border-indigo-500/40' },
-  { id: 'interview', label: 'Technical Interview', color: 'border-purple-500/40' },
-  { id: 'offer', label: 'Offer Extended', color: 'border-emerald-500/40' },
-  { id: 'rejected', label: 'Rejected', color: 'border-red-500/40' }
+  { id: 'new', label: 'New / Applied', color: 'border-slate-300 dark:border-slate-700/80' },
+  { id: 'screening', label: 'Screening', color: 'border-sky-300 dark:border-sky-500/40' },
+  { id: 'phone_screen', label: 'Phone Screen', color: 'border-indigo-300 dark:border-indigo-500/40' },
+  { id: 'interview', label: 'Technical Interview', color: 'border-purple-300 dark:border-purple-500/40' },
+  { id: 'offer', label: 'Offer Extended', color: 'border-emerald-300 dark:border-emerald-500/40' },
+  { id: 'rejected', label: 'Rejected', color: 'border-red-300 dark:border-red-500/40' }
 ];
 
 async function renderKanbanBoard() {
@@ -266,13 +326,13 @@ async function renderKanbanBoard() {
   KANBAN_STAGES.forEach(col => {
     const colCandidates = kanbanCandidates.filter(c => c.stage === col.id);
     const colDiv = document.createElement('div');
-    colDiv.className = `w-80 bg-slate-950/80 border ${col.color} rounded-2xl flex flex-col h-full max-h-full overflow-hidden shadow-card`;
+    colDiv.className = `w-80 bg-white dark:bg-slate-950/80 border ${col.color} rounded-2xl flex flex-col h-full max-h-full overflow-hidden shadow-sm dark:shadow-card`;
 
     colDiv.innerHTML = `
-      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+      <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900/60">
         <div class="flex items-center space-x-2.5">
-          <span class="text-xs font-bold text-white tracking-wide uppercase font-mono">${col.label}</span>
-          <span class="w-6 h-6 rounded-full bg-slate-800 text-slate-200 font-mono text-xs font-bold flex items-center justify-center">${colCandidates.length}</span>
+          <span class="text-xs font-bold text-slate-900 dark:text-white tracking-wide uppercase font-mono">${col.label}</span>
+          <span class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-mono text-xs font-bold flex items-center justify-center">${colCandidates.length}</span>
         </div>
       </div>
       <div class="flex-1 overflow-y-auto p-3.5 space-y-3.5" id="kanban-col-${col.id}"></div>
@@ -282,21 +342,21 @@ async function renderKanbanBoard() {
     
     colCandidates.forEach(cand => {
       const card = document.createElement('div');
-      card.className = 'bg-slate-900 border border-slate-800 hover:border-brand-500/70 rounded-xl p-4 space-y-2.5 cursor-pointer transition shadow-sm hover:shadow-card-hover';
+      card.className = 'bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-brand-500/70 rounded-xl p-4 space-y-2.5 cursor-pointer transition shadow-sm hover:shadow-card-hover';
       card.onclick = () => openCandidateDrawer(cand.id);
 
       const matchBadgeClass = cand.match_score >= 85 ? 'badge-match-high' : (cand.match_score >= 70 ? 'badge-match-med' : 'badge-match-low');
 
       card.innerHTML = `
         <div class="flex items-center justify-between">
-          <span class="font-bold text-xs text-white hover:text-brand-300 transition">${cand.name}</span>
+          <span class="font-bold text-xs text-slate-900 dark:text-white hover:text-brand-600 dark:hover:text-brand-300 transition">${cand.name}</span>
           <span class="px-2 py-0.5 rounded-full font-mono text-[10px] font-bold ${matchBadgeClass}">${cand.match_score}%</span>
         </div>
-        <div class="text-[11px] text-slate-400 truncate">${cand.current_title || 'Engineer'} ${cand.current_company ? '@ ' + cand.current_company : ''}</div>
+        <div class="text-[11px] text-slate-500 dark:text-slate-400 truncate">${cand.current_title || 'Engineer'} ${cand.current_company ? '@ ' + cand.current_company : ''}</div>
         <div class="flex flex-wrap gap-1.5">
-          ${(cand.skills || []).slice(0, 3).map(s => `<span class="px-2 py-0.5 rounded-md bg-slate-800 text-slate-300 text-[10px] font-medium border border-slate-700/60">${s}</span>`).join('')}
+          ${(cand.skills || []).slice(0, 3).map(s => `<span class="px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-medium border border-slate-200 dark:border-slate-700/60">${s}</span>`).join('')}
         </div>
-        <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-[10px] text-slate-400 font-mono">
+        <div class="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 font-mono">
           <span>${cand.years_of_experience} yrs exp</span>
           <span>${cand.applied_at}</span>
         </div>
@@ -308,7 +368,7 @@ async function renderKanbanBoard() {
   });
 }
 
-// ==================== CANDIDATE PROFILE DRAWER (SPACIOUS & STRUCTURED) ====================
+// ==================== CANDIDATE PROFILE DRAWER ====================
 
 async function openCandidateDrawer(candidateId, index = -1) {
   try {
@@ -339,8 +399,8 @@ async function openCandidateDrawer(candidateId, index = -1) {
     // Pros
     const prosList = document.getElementById('drawerProsList');
     prosList.innerHTML = (candidate.ai_pros || []).map(p => `
-      <li class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-950/40 border border-emerald-950/50">
-        <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">✓</span>
+      <li class="flex items-start gap-2.5 p-2 rounded-xl bg-white/60 dark:bg-slate-950/40 border border-emerald-200 dark:border-emerald-950/50">
+        <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">✓</span>
         <span>${p}</span>
       </li>
     `).join('');
@@ -348,8 +408,8 @@ async function openCandidateDrawer(candidateId, index = -1) {
     // Cons
     const consList = document.getElementById('drawerConsList');
     consList.innerHTML = (candidate.ai_cons || []).map(c => `
-      <li class="flex items-start gap-2.5 p-2 rounded-xl bg-slate-950/40 border border-amber-950/50">
-        <span class="w-4 h-4 rounded-full bg-amber-500/20 text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">!</span>
+      <li class="flex items-start gap-2.5 p-2 rounded-xl bg-white/60 dark:bg-slate-950/40 border border-amber-200 dark:border-amber-950/50">
+        <span class="w-4 h-4 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center shrink-0 mt-0.5">!</span>
         <span>${c}</span>
       </li>
     `).join('');
@@ -357,9 +417,9 @@ async function openCandidateDrawer(candidateId, index = -1) {
     // Questions
     const questionsList = document.getElementById('drawerQuestionsList');
     questionsList.innerHTML = (candidate.ai_questions || []).map((q, idx) => `
-      <li class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 space-y-1">
-        <span class="font-mono text-xs text-brand-400 font-bold block">Interview Question ${idx+1}</span>
-        <p class="text-slate-200 text-xs leading-relaxed font-medium">${q}</p>
+      <li class="p-3.5 rounded-xl bg-white/60 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/80 space-y-1">
+        <span class="font-mono text-xs text-brand-600 dark:text-brand-400 font-bold block">Interview Question ${idx+1}</span>
+        <p class="text-slate-800 dark:text-slate-200 text-xs leading-relaxed font-medium">${q}</p>
       </li>
     `).join('');
 
@@ -371,7 +431,7 @@ async function openCandidateDrawer(candidateId, index = -1) {
     document.getElementById('drawerExp').textContent = `${candidate.years_of_experience} years professional experience`;
     document.getElementById('drawerEducation').textContent = candidate.education || 'N/A';
 
-    // Resume Tab (Structured Formatted View)
+    // Resume Tab
     renderFormattedResume(candidate);
 
     // Notes Tab
@@ -396,33 +456,33 @@ function renderFormattedResume(candidate) {
 
   container.innerHTML = `
     <!-- Executive Header Card -->
-    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-card space-y-3">
+    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-card space-y-3">
       <div class="flex items-center justify-between">
-        <h3 class="text-base font-bold text-white">${candidate.name}</h3>
-        <span class="px-2.5 py-1 rounded-lg bg-brand-500/20 text-brand-300 font-mono text-xs font-semibold">${candidate.years_of_experience} Years Exp</span>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">${candidate.name}</h3>
+        <span class="px-2.5 py-1 rounded-lg bg-brand-500/20 text-brand-600 dark:text-brand-300 font-mono text-xs font-semibold">${candidate.years_of_experience} Years Exp</span>
       </div>
-      <p class="text-xs text-slate-300 font-medium">${candidate.current_title} @ <strong class="text-white">${candidate.current_company}</strong></p>
-      <div class="pt-2 border-t border-slate-800 flex flex-wrap gap-2">
-        <span class="px-2 py-1 rounded bg-slate-950 text-slate-400 text-xs">📍 ${candidate.location}</span>
-        <span class="px-2 py-1 rounded bg-slate-950 text-slate-400 text-xs">✉️ ${candidate.email}</span>
-        <span class="px-2 py-1 rounded bg-slate-950 text-slate-400 text-xs">🎓 ${candidate.education}</span>
+      <p class="text-xs text-slate-600 dark:text-slate-300 font-medium">${candidate.current_title} @ <strong class="text-slate-900 dark:text-white">${candidate.current_company}</strong></p>
+      <div class="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-wrap gap-2">
+        <span class="px-2 py-1 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-xs">📍 ${candidate.location}</span>
+        <span class="px-2 py-1 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-xs">✉️ ${candidate.email}</span>
+        <span class="px-2 py-1 rounded bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-xs">🎓 ${candidate.education}</span>
       </div>
     </div>
 
     <!-- Technical Stack Card -->
-    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-card space-y-3">
-      <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">Verified Skills & Tools</h4>
+    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-card space-y-3">
+      <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-mono">Verified Skills & Tools</h4>
       <div class="flex flex-wrap gap-2">
         ${(candidate.skills || []).map(s => `
-          <span class="px-3 py-1 rounded-xl bg-slate-950 border border-slate-700 text-slate-200 text-xs font-medium">${s}</span>
+          <span class="px-3 py-1 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium">${s}</span>
         `).join('')}
       </div>
     </div>
 
     <!-- Career Experience Narrative Card -->
-    <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 shadow-card space-y-4">
-      <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider font-mono">Resume Document Overview</h4>
-      <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">
+    <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 shadow-sm dark:shadow-card space-y-4">
+      <h4 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider font-mono">Resume Document Overview</h4>
+      <div class="p-4 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 whitespace-pre-wrap font-sans leading-relaxed">
         ${raw}
       </div>
     </div>
@@ -457,10 +517,10 @@ function switchDrawerTab(tabName) {
     const btn = document.getElementById(`drawerTab${t.charAt(0).toUpperCase() + t.slice(1)}`);
     const content = document.getElementById(`drawerContent${t.charAt(0).toUpperCase() + t.slice(1)}`);
     if (t === tabName) {
-      btn.className = 'py-3 px-4 font-bold text-brand-400 border-b-2 border-brand-500 transition flex items-center gap-2';
+      btn.className = 'py-3 px-4 font-bold text-brand-600 dark:text-brand-400 border-b-2 border-brand-500 transition flex items-center gap-2';
       content.classList.remove('hidden');
     } else {
-      btn.className = 'py-3 px-4 font-semibold text-slate-400 hover:text-white transition flex items-center gap-2';
+      btn.className = 'py-3 px-4 font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-2';
       content.classList.add('hidden');
     }
   });
@@ -469,11 +529,11 @@ function switchDrawerTab(tabName) {
 function updateDrawerStarUI(isStarred) {
   const icon = document.getElementById('drawerStarIcon');
   if (isStarred) {
-    icon.classList.add('text-amber-400', 'fill-amber-400');
-    icon.classList.remove('text-slate-500');
+    icon.classList.add('text-amber-500', 'fill-amber-500');
+    icon.classList.remove('text-slate-400');
   } else {
-    icon.classList.remove('text-amber-400', 'fill-amber-400');
-    icon.classList.add('text-slate-500');
+    icon.classList.remove('text-amber-500', 'fill-amber-500');
+    icon.classList.add('text-slate-400');
   }
 }
 
@@ -589,9 +649,9 @@ function setNoteRating(stars) {
   const buttons = document.querySelectorAll('#starRatingSelect button');
   buttons.forEach((btn, idx) => {
     if (idx < stars) {
-      btn.className = 'star-rating text-amber-400 text-lg transition';
+      btn.className = 'star-rating text-amber-500 text-lg transition';
     } else {
-      btn.className = 'star-rating text-slate-600 hover:text-amber-400 text-lg transition';
+      btn.className = 'star-rating text-slate-300 dark:text-slate-600 hover:text-amber-500 text-lg transition';
     }
   });
 }
@@ -636,16 +696,16 @@ function renderDrawerNotes(notes) {
     return;
   }
   container.innerHTML = notes.map(n => `
-    <div class="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-2.5 text-xs shadow-card">
+    <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 space-y-2.5 text-xs shadow-sm dark:shadow-card">
       <div class="flex items-center justify-between">
-        <span class="font-bold text-slate-200 text-xs">${n.author}</span>
+        <span class="font-bold text-slate-800 dark:text-slate-200 text-xs">${n.author}</span>
         <span class="text-[11px] text-slate-500 font-mono">${n.created_at}</span>
       </div>
       <div class="flex items-center gap-2.5">
-        <span class="px-2 py-0.5 rounded-md bg-slate-950 text-brand-300 font-mono text-[10px] font-semibold border border-slate-800">${n.category}</span>
-        ${n.rating ? `<span class="text-amber-400 font-bold">${'★'.repeat(n.rating)}</span>` : ''}
+        <span class="px-2 py-0.5 rounded-md bg-white dark:bg-slate-950 text-brand-600 dark:text-brand-300 font-mono text-[10px] font-semibold border border-slate-200 dark:border-slate-800">${n.category}</span>
+        ${n.rating ? `<span class="text-amber-500 font-bold">${'★'.repeat(n.rating)}</span>` : ''}
       </div>
-      <p class="text-slate-300 leading-relaxed font-normal">${n.text}</p>
+      <p class="text-slate-700 dark:text-slate-300 leading-relaxed font-normal">${n.text}</p>
     </div>
   `).join('');
 }
@@ -658,12 +718,12 @@ function renderDrawerActivity(activities) {
   }
   container.innerHTML = activities.map(a => `
     <div class="relative pb-5">
-      <span class="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full bg-brand-500 ring-4 ring-slate-950"></span>
+      <span class="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full bg-brand-500 ring-4 ring-white dark:ring-slate-950"></span>
       <div class="flex items-center justify-between">
-        <span class="font-bold text-white text-xs">${a.action}</span>
+        <span class="font-bold text-slate-900 dark:text-white text-xs">${a.action}</span>
         <span class="text-[11px] text-slate-500 font-mono">${a.timestamp}</span>
       </div>
-      <p class="text-slate-400 text-xs mt-1">${a.details || ''} • <span class="text-slate-500 font-medium">${a.actor}</span></p>
+      <p class="text-slate-600 dark:text-slate-400 text-xs mt-1">${a.details || ''} • <span class="text-slate-500 font-medium">${a.actor}</span></p>
     </div>
   `).join('');
 }
@@ -848,9 +908,9 @@ function toggleStarredFilter() {
   state.filters.starred = !state.filters.starred;
   const btn = document.getElementById('starredToggleBtn');
   if (state.filters.starred) {
-    btn.className = 'px-3.5 py-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 transition flex items-center gap-1.5 font-semibold';
+    btn.className = 'px-3.5 py-2.5 rounded-xl bg-amber-100 dark:bg-amber-500/20 border border-amber-300 dark:border-amber-500/40 text-amber-700 dark:text-amber-300 transition flex items-center gap-1.5 font-semibold';
   } else {
-    btn.className = 'px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-amber-400 transition flex items-center gap-1.5 font-medium shadow-sm';
+    btn.className = 'px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 transition flex items-center gap-1.5 font-medium shadow-sm';
   }
   state.pagination.page = 1;
   loadCandidates();
@@ -911,10 +971,10 @@ async function loadAnalytics() {
       return `
         <div class="space-y-1.5">
           <div class="flex justify-between text-xs">
-            <span class="text-slate-200 font-semibold">${s.label}</span>
-            <span class="font-mono text-slate-400 font-medium">${s.count} candidates</span>
+            <span class="text-slate-800 dark:text-slate-200 font-semibold">${s.label}</span>
+            <span class="font-mono text-slate-500 dark:text-slate-400 font-medium">${s.count} candidates</span>
           </div>
-          <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+          <div class="w-full bg-slate-200 dark:bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-300 dark:border-slate-800">
             <div class="bg-gradient-to-r from-brand-600 to-indigo-500 h-3 rounded-full transition-all duration-700 shadow-sm" style="width: ${pct}%"></div>
           </div>
         </div>
@@ -929,10 +989,10 @@ async function loadAnalytics() {
       return `
         <div class="space-y-1.5">
           <div class="flex justify-between text-xs">
-            <span class="text-slate-200 font-semibold">${bucket}</span>
-            <span class="font-mono text-slate-400 font-medium">${count}</span>
+            <span class="text-slate-800 dark:text-slate-200 font-semibold">${bucket}</span>
+            <span class="font-mono text-slate-500 dark:text-slate-400 font-medium">${count}</span>
           </div>
-          <div class="w-full bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-800">
+          <div class="w-full bg-slate-200 dark:bg-slate-900 rounded-full h-3 overflow-hidden border border-slate-300 dark:border-slate-800">
             <div class="bg-gradient-to-r from-indigo-500 to-violet-500 h-3 rounded-full transition-all duration-700 shadow-sm" style="width: ${pct}%"></div>
           </div>
         </div>
@@ -942,9 +1002,9 @@ async function loadAnalytics() {
     // Top skills
     const skillsContainer = document.getElementById('topSkillsPills');
     skillsContainer.innerHTML = (data.top_skills || []).map(s => `
-      <span class="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 font-mono flex items-center gap-2 shadow-sm">
+      <span class="px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 font-mono flex items-center gap-2 shadow-sm">
         <span>${s.skill}</span>
-        <span class="px-2 py-0.5 rounded-md bg-slate-800 text-brand-300 text-[10px] font-bold border border-slate-700">${s.count}</span>
+        <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 text-[10px] font-bold border border-slate-200 dark:border-slate-700">${s.count}</span>
       </span>
     `).join('');
 
@@ -1097,11 +1157,11 @@ function toggleKeyboardModal(forceState) {
 function showToast(message, type = 'info') {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
-  const bg = type === 'success' ? 'bg-emerald-950/90 border-emerald-700/80 text-emerald-100 shadow-emerald-950/50' :
-             type === 'error' ? 'bg-red-950/90 border-red-700/80 text-red-100 shadow-red-950/50' :
-             'bg-slate-900/90 border-slate-700/80 text-slate-100 shadow-slate-950/50';
+  const bg = type === 'success' ? 'bg-emerald-600 text-white shadow-emerald-500/30' :
+             type === 'error' ? 'bg-red-600 text-white shadow-red-500/30' :
+             'bg-slate-900 text-white shadow-slate-900/40 dark:bg-slate-800 dark:border-slate-700';
 
-  toast.className = `${bg} border shadow-2xl rounded-2xl px-5 py-3 text-xs font-semibold flex items-center space-x-2.5 backdrop-blur-md animate-fade-in pointer-events-auto ring-1 ring-white/10`;
+  toast.className = `${bg} shadow-2xl rounded-2xl px-5 py-3 text-xs font-semibold flex items-center space-x-2.5 backdrop-blur-md animate-fade-in pointer-events-auto ring-1 ring-white/10`;
   toast.innerHTML = `<span>${message}</span>`;
   container.appendChild(toast);
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950 text-slate-100">
+<html lang="en" class="h-full dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +10,20 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
+  <!-- Immediate Theme Initializer to prevent flash of wrong theme -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('talentflow-theme');
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.add('dark');
+        document.documentElement.classList.remove('light');
+      }
+    })();
+  </script>
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -39,8 +53,9 @@
           boxShadow: {
             'glow-sm': '0 0 15px -3px rgba(99, 102, 241, 0.15)',
             'glow-md': '0 0 25px -4px rgba(99, 102, 241, 0.25)',
-            'card': '0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3)',
-            'card-hover': '0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.4)',
+            'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
+            'card-dark': '0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3)',
+            'card-hover': '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
           }
         }
       }
@@ -50,40 +65,70 @@
     /* Custom Scrollbars */
     ::-webkit-scrollbar { width: 7px; height: 7px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    .dark ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-    /* Match Score Badges */
+    /* Match Score Badges (Adaptive for Light and Dark) */
     .badge-match-high {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .dark .badge-match-high {
       background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(5, 150, 105, 0.22) 100%);
       color: #34d399;
       border: 1px solid rgba(16, 185, 129, 0.35);
     }
     .badge-match-med {
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .dark .badge-match-med {
       background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(217, 119, 6, 0.2) 100%);
       color: #fbbf24;
       border: 1px solid rgba(245, 158, 11, 0.35);
     }
     .badge-match-low {
+      background: rgba(239, 68, 68, 0.12);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    .dark .badge-match-low {
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.14) 0%, rgba(220, 38, 38, 0.2) 100%);
       color: #f87171;
       border: 1px solid rgba(239, 68, 68, 0.35);
     }
 
-    /* Pipeline Stage Chips */
-    .stage-new { background-color: rgba(148, 163, 184, 0.12); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.25); }
-    .stage-screening { background-color: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); }
-    .stage-phone_screen { background-color: rgba(129, 140, 248, 0.12); color: #a5b4fc; border: 1px solid rgba(129, 140, 248, 0.25); }
-    .stage-interview { background-color: rgba(192, 132, 252, 0.12); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.25); }
-    .stage-offer { background-color: rgba(52, 211, 153, 0.12); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.25); }
-    .stage-hired { background-color: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); }
-    .stage-rejected { background-color: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
+    /* Pipeline Stage Chips (Adaptive) */
+    .stage-new { background-color: rgba(100, 116, 139, 0.1); color: #475569; border: 1px solid rgba(100, 116, 139, 0.2); }
+    .dark .stage-new { background-color: rgba(148, 163, 184, 0.12); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.25); }
+    
+    .stage-screening { background-color: rgba(2, 132, 199, 0.1); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.2); }
+    .dark .stage-screening { background-color: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.25); }
+    
+    .stage-phone_screen { background-color: rgba(99, 102, 241, 0.1); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.2); }
+    .dark .stage-phone_screen { background-color: rgba(129, 140, 248, 0.12); color: #a5b4fc; border: 1px solid rgba(129, 140, 248, 0.25); }
+    
+    .stage-interview { background-color: rgba(147, 51, 234, 0.1); color: #9333ea; border: 1px solid rgba(147, 51, 234, 0.2); }
+    .dark .stage-interview { background-color: rgba(192, 132, 252, 0.12); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.25); }
+    
+    .stage-offer { background-color: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .dark .stage-offer { background-color: rgba(52, 211, 153, 0.12); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.25); }
+    
+    .stage-hired { background-color: rgba(16, 185, 129, 0.2); color: #047857; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .dark .stage-hired { background-color: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.4); }
+    
+    .stage-rejected { background-color: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.2); }
+    .dark .stage-rejected { background-color: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.25); }
   </style>
 </head>
-<body class="h-full flex flex-row font-sans antialiased overflow-hidden bg-[#090D16] text-slate-100 selection:bg-brand-500 selection:text-white">
+<body class="h-full flex flex-row font-sans antialiased overflow-hidden bg-slate-100 dark:bg-[#090D16] text-slate-900 dark:text-slate-100 selection:bg-brand-500 selection:text-white transition-colors duration-200">
 
   <!-- ==================== LEFT SIDEBAR NAVIGATION ==================== -->
-  <aside class="w-64 xl:w-72 bg-slate-950/95 border-r border-slate-800/80 flex flex-col justify-between p-5 shrink-0 z-30 select-none shadow-xl">
+  <aside class="w-64 xl:w-72 bg-white dark:bg-slate-950/95 border-r border-slate-200 dark:border-slate-800/80 flex flex-col justify-between p-5 shrink-0 z-30 select-none shadow-sm dark:shadow-xl transition-colors duration-200">
     
     <!-- Top Area: Logo, Primary Action, Requisition & Navigation -->
     <div class="space-y-6 overflow-y-auto">
@@ -95,10 +140,10 @@
         </div>
         <div class="min-w-0">
           <div class="flex items-center gap-1.5">
-            <span class="text-base font-bold tracking-tight text-white truncate">TalentFlow</span>
-            <span class="text-[10px] uppercase font-mono font-bold px-1.5 py-0.5 rounded-full bg-brand-500/15 text-brand-300 border border-brand-500/30">ATS</span>
+            <span class="text-base font-bold tracking-tight text-slate-900 dark:text-white truncate">TalentFlow</span>
+            <span class="text-[10px] uppercase font-mono font-bold px-1.5 py-0.5 rounded-full bg-brand-500/15 text-brand-600 dark:text-brand-300 border border-brand-500/30">ATS</span>
           </div>
-          <span class="text-[11px] text-slate-400 block truncate">Recruiter Workspace</span>
+          <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">Recruiter Workspace</span>
         </div>
       </div>
 
@@ -110,87 +155,99 @@
 
       <!-- Target Requisition Selector -->
       <div class="space-y-2">
-        <label for="jobSelector" class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold block px-1">
+        <label for="jobSelector" class="text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold block px-1">
           Active Requisition
         </label>
         <div class="relative">
-          <span class="absolute left-3 top-3 text-slate-500 pointer-events-none">
+          <span class="absolute left-3 top-3 text-slate-400 dark:text-slate-500 pointer-events-none">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
           </span>
-          <select id="jobSelector" onchange="onJobChange()" class="w-full bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-semibold rounded-xl pl-9 pr-7 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition cursor-pointer truncate shadow-sm">
+          <select id="jobSelector" onchange="onJobChange()" class="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-xl pl-9 pr-7 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition cursor-pointer truncate shadow-sm">
             <option value="">All Requisitions (Overview)</option>
           </select>
-          <span class="absolute right-3 top-3 text-slate-500 pointer-events-none text-xs">▼</span>
+          <span class="absolute right-3 top-3 text-slate-400 dark:text-slate-500 pointer-events-none text-xs">▼</span>
         </div>
       </div>
 
       <!-- Workspace Views Navigation Links -->
       <div class="space-y-1.5">
-        <span class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold block px-1 mb-2">
+        <span class="text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold block px-1 mb-2">
           Workspace Views
         </span>
 
         <!-- Triage Grid Tab -->
-        <button id="viewTabTable" onclick="switchView('table')" class="w-full px-3.5 py-2.5 rounded-xl font-semibold text-white bg-slate-800/90 border border-slate-700/80 shadow-sm transition flex items-center gap-3">
-          <svg class="w-4 h-4 text-brand-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+        <button id="viewTabTable" onclick="switchView('table')" class="w-full px-3.5 py-2.5 rounded-xl font-semibold text-brand-600 dark:text-white bg-brand-50 dark:bg-slate-800/90 border border-brand-200 dark:border-slate-700/80 shadow-sm transition flex items-center gap-3">
+          <svg class="w-4 h-4 text-brand-500 dark:text-brand-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
           <span class="text-xs">Triage Grid</span>
         </button>
 
         <!-- Pipeline Kanban Tab -->
-        <button id="viewTabKanban" onclick="switchView('kanban')" class="w-full px-3.5 py-2.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-900 transition flex items-center gap-3">
+        <button id="viewTabKanban" onclick="switchView('kanban')" class="w-full px-3.5 py-2.5 rounded-xl font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center gap-3">
           <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path></svg>
           <span class="text-xs">Pipeline Kanban</span>
         </button>
 
         <!-- Funnel Metrics Tab -->
-        <button id="viewTabAnalytics" onclick="switchView('analytics')" class="w-full px-3.5 py-2.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-900 transition flex items-center gap-3">
+        <button id="viewTabAnalytics" onclick="switchView('analytics')" class="w-full px-3.5 py-2.5 rounded-xl font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center gap-3">
           <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
           <span class="text-xs">Funnel Metrics</span>
         </button>
       </div>
 
       <!-- Quick Actions / Tools Section -->
-      <div class="space-y-1.5 pt-2 border-t border-slate-800/80">
-        <span class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-bold block px-1 mb-2">
-          Quick Tools
+      <div class="space-y-1.5 pt-2 border-t border-slate-200 dark:border-slate-800/80">
+        <span class="text-[11px] font-mono uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold block px-1 mb-2">
+          Tools & Appearance
         </span>
 
+        <!-- Dark / Light Mode Toggle Button in Sidebar -->
+        <button id="sidebarThemeToggleBtn" onclick="toggleTheme()" class="w-full px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center justify-between text-xs font-medium">
+          <div class="flex items-center gap-3">
+            <span id="sidebarThemeIcon" class="text-slate-500 dark:text-amber-400">
+              <!-- Rendered via JS -->
+              ☀️
+            </span>
+            <span id="sidebarThemeLabel">Theme Mode</span>
+          </div>
+          <span id="sidebarThemeBadge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700">Dark</span>
+        </button>
+
         <!-- Export CSV Button -->
-        <button onclick="exportCurrentCSV()" title="Export current filtered list to CSV" class="w-full px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition flex items-center gap-3 text-xs font-medium">
-          <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+        <button onclick="exportCurrentCSV()" title="Export current filtered list to CSV" class="w-full px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center gap-3 text-xs font-medium">
+          <svg class="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
           <span>Export CSV</span>
         </button>
 
         <!-- Reset Demo Data Button -->
-        <button onclick="confirmResetDemo()" title="Reset and re-seed 120+ realistic applicants" class="w-full px-3.5 py-2 rounded-xl text-slate-300 hover:text-amber-400 hover:bg-slate-900 transition flex items-center gap-3 text-xs font-medium">
-          <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        <button onclick="confirmResetDemo()" title="Reset and re-seed 120+ realistic applicants" class="w-full px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center gap-3 text-xs font-medium">
+          <svg class="w-4 h-4 text-amber-500 dark:text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
           <span>Reset Demo Data</span>
         </button>
 
         <!-- Keyboard Shortcuts Button -->
-        <button onclick="toggleKeyboardModal()" title="Keyboard Shortcuts (?)" class="w-full px-3.5 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-900 transition flex items-center justify-between text-xs font-medium">
+        <button onclick="toggleKeyboardModal()" title="Keyboard Shortcuts (?)" class="w-full px-3.5 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center justify-between text-xs font-medium">
           <div class="flex items-center gap-3">
-            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+            <svg class="w-4 h-4 text-slate-500 dark:text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
             <span>Shortcuts</span>
           </div>
-          <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-[10px] text-brand-300 font-bold border border-slate-700">?</kbd>
+          <kbd class="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[10px] text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">?</kbd>
         </button>
       </div>
 
     </div>
 
     <!-- Bottom Area: Recruiter User Profile Card -->
-    <div class="pt-4 border-t border-slate-800/80">
-      <div class="p-3 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center space-x-3 shadow-card">
+    <div class="pt-4 border-t border-slate-200 dark:border-slate-800/80">
+      <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 flex items-center space-x-3 shadow-card dark:shadow-card-dark">
         <div class="relative shrink-0">
           <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-indigo-700 to-purple-600 border border-indigo-400/30 flex items-center justify-center text-xs font-extrabold text-white shadow-sm">
             SJ
           </div>
-          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-950"></span>
+          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-950"></span>
         </div>
         <div class="min-w-0 flex-1">
-          <span class="text-xs font-bold text-white block truncate">Sarah Jenkins</span>
-          <span class="text-[11px] text-slate-400 block truncate">Lead Technical Recruiter</span>
+          <span class="text-xs font-bold text-slate-900 dark:text-white block truncate">Sarah Jenkins</span>
+          <span class="text-[11px] text-slate-500 dark:text-slate-400 block truncate">Lead Technical Recruiter</span>
         </div>
       </div>
     </div>
@@ -201,7 +258,7 @@
   <div class="flex-1 flex flex-col h-full overflow-hidden min-w-0">
 
     <!-- TOP FILTER & SEARCH TOOLBAR (Spacious, Breathable & Intuitive) -->
-    <section class="bg-slate-950/70 border-b border-slate-800/80 px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 text-xs shrink-0 z-20 backdrop-blur-sm">
+    <section class="bg-white/80 dark:bg-slate-950/70 border-b border-slate-200 dark:border-slate-800/80 px-8 py-3.5 flex flex-wrap items-center justify-between gap-4 text-xs shrink-0 z-20 backdrop-blur-sm transition-colors duration-200">
       <div class="flex items-center flex-wrap gap-3 flex-1">
         <!-- Spacious Search Input with shortcut pill -->
         <div class="relative min-w-[280px] max-w-md flex-1">
@@ -209,13 +266,13 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           </span>
           <input id="searchInput" type="text" placeholder="Search by name, skills, title, company, or resume... (press /)" oninput="handleSearchInput(event)"
-            class="w-full bg-slate-900/90 border border-slate-800 hover:border-slate-700 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition shadow-inner">
-          <kbd class="absolute right-3 top-2.5 text-[10px] font-mono text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded-md border border-slate-700 pointer-events-none">/</kbd>
+            class="w-full bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-900 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500 transition shadow-inner">
+          <kbd class="absolute right-3 top-2.5 text-[10px] font-mono text-slate-400 bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded-md border border-slate-300 dark:border-slate-700 pointer-events-none">/</kbd>
         </div>
 
         <!-- Pipeline Stage Filter -->
         <div class="relative">
-          <select id="stageFilter" onchange="onFilterChange()" class="bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition cursor-pointer">
+          <select id="stageFilter" onchange="onFilterChange()" class="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition cursor-pointer shadow-sm">
             <option value="all">Pipeline Stage: All</option>
             <option value="new">New (Unreviewed)</option>
             <option value="screening">Screening</option>
@@ -229,7 +286,7 @@
 
         <!-- Match Score Filter -->
         <div class="relative">
-          <select id="scoreFilter" onchange="onFilterChange()" class="bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition cursor-pointer">
+          <select id="scoreFilter" onchange="onFilterChange()" class="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition cursor-pointer shadow-sm">
             <option value="">Match Score: Any</option>
             <option value="85">Match: 85%+ (Top Tier)</option>
             <option value="70">Match: 70%+ (Strong Fit)</option>
@@ -239,7 +296,7 @@
 
         <!-- Min Experience Filter -->
         <div class="relative">
-          <select id="expFilter" onchange="onFilterChange()" class="bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition cursor-pointer">
+          <select id="expFilter" onchange="onFilterChange()" class="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition cursor-pointer shadow-sm">
             <option value="">Experience: Any</option>
             <option value="3">3+ Years</option>
             <option value="5">5+ Years (Senior)</option>
@@ -248,14 +305,14 @@
         </div>
 
         <!-- Starred Only toggle button -->
-        <button id="starredToggleBtn" onclick="toggleStarredFilter()" class="px-3.5 py-2.5 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-400 hover:text-amber-400 transition flex items-center gap-1.5 font-medium shadow-sm">
+        <button id="starredToggleBtn" onclick="toggleStarredFilter()" class="px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-600 dark:text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 transition flex items-center gap-1.5 font-medium shadow-sm">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
           <span>Starred Only</span>
         </button>
 
         <!-- Sort By Filter -->
         <div class="relative">
-          <select id="sortFilter" onchange="onFilterChange()" class="bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition cursor-pointer">
+          <select id="sortFilter" onchange="onFilterChange()" class="bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-medium rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500/50 transition cursor-pointer shadow-sm">
             <option value="score_desc">Sort: Highest Match Score</option>
             <option value="score_asc">Sort: Lowest Match Score</option>
             <option value="applied_desc">Sort: Most Recently Applied</option>
@@ -266,29 +323,38 @@
         </div>
       </div>
 
-      <!-- Active Count Badge -->
-      <div class="flex items-center space-x-2 text-slate-400 font-mono text-xs">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span id="candidateCountSummary" class="font-medium text-slate-300">Loading applicants...</span>
+      <!-- Right Area: Theme Toggle Pill & Candidate Count Summary -->
+      <div class="flex items-center space-x-4">
+        <!-- Quick Theme Toggle Button in Top Toolbar -->
+        <button onclick="toggleTheme()" title="Switch Light/Dark Mode" class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-brand-500 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-2 transition shadow-sm">
+          <span id="topThemeIcon">☀️</span>
+          <span id="topThemeLabel" class="hidden sm:inline">Theme</span>
+        </button>
+
+        <!-- Active Candidate Count Badge -->
+        <div class="flex items-center space-x-2 text-slate-500 dark:text-slate-400 font-mono text-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="candidateCountSummary" class="font-medium text-slate-700 dark:text-slate-300">Loading applicants...</span>
+        </div>
       </div>
     </section>
 
     <!-- FLOATING BULK ACTIONS TOOLBAR (Appears when 1+ candidates are selected) -->
-    <div id="bulkActionBar" class="hidden bg-slate-900/95 border border-brand-500/40 shadow-2xl shadow-brand-950/60 rounded-2xl px-5 py-3 mx-8 my-2.5 flex items-center justify-between z-30 backdrop-blur-md animate-fade-in shrink-0 ring-1 ring-brand-500/20">
+    <div id="bulkActionBar" class="hidden bg-white/95 dark:bg-slate-900/95 border border-brand-500/40 shadow-xl dark:shadow-2xl shadow-brand-950/20 dark:shadow-brand-950/60 rounded-2xl px-5 py-3 mx-8 my-2.5 flex items-center justify-between z-30 backdrop-blur-md animate-fade-in shrink-0 ring-1 ring-brand-500/20">
       <div class="flex items-center space-x-4">
         <div class="flex items-center space-x-2">
           <span class="w-7 h-7 rounded-lg bg-brand-600 text-white font-bold text-xs flex items-center justify-center shadow-md" id="selectedCountBadge">0</span>
-          <span class="text-xs font-bold text-white tracking-wide">Candidates Selected</span>
+          <span class="text-xs font-bold text-slate-900 dark:text-white tracking-wide">Candidates Selected</span>
         </div>
-        <div class="h-4 w-px bg-slate-700"></div>
-        <button onclick="selectAllAcrossPages()" class="text-xs font-medium text-brand-300 hover:text-white underline underline-offset-4">Select all matching candidates</button>
+        <div class="h-4 w-px bg-slate-200 dark:bg-slate-700"></div>
+        <button onclick="selectAllAcrossPages()" class="text-xs font-semibold text-brand-600 dark:text-brand-300 hover:underline underline-offset-4">Select all matching candidates</button>
       </div>
 
       <div class="flex items-center space-x-3">
         <!-- Bulk Move Stage -->
-        <div class="flex items-center bg-slate-950/80 rounded-xl border border-slate-700/80 px-3 py-1.5 shadow-inner">
-          <span class="text-xs text-slate-400 mr-2 font-medium">Move to:</span>
-          <select id="bulkStageSelect" class="bg-transparent text-xs text-white font-semibold focus:outline-none cursor-pointer">
+        <div class="flex items-center bg-slate-100 dark:bg-slate-950/80 rounded-xl border border-slate-200 dark:border-slate-700/80 px-3 py-1.5 shadow-inner">
+          <span class="text-xs text-slate-600 dark:text-slate-400 mr-2 font-medium">Move to:</span>
+          <select id="bulkStageSelect" class="bg-transparent text-xs text-slate-900 dark:text-white font-semibold focus:outline-none cursor-pointer">
             <option value="screening">Screening</option>
             <option value="phone_screen">Phone Screen</option>
             <option value="interview">Technical Interview</option>
@@ -299,19 +365,19 @@
         </div>
 
         <!-- Bulk Email -->
-        <button onclick="openBulkEmailModal()" class="px-3.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-2 border border-slate-700">
-          <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        <button onclick="openBulkEmailModal()" class="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition flex items-center gap-2 border border-slate-200 dark:border-slate-700">
+          <svg class="w-4 h-4 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
           <span>Bulk Email</span>
         </button>
 
         <!-- Bulk Reject -->
-        <button onclick="executeBulkReject()" class="px-3.5 py-1.5 rounded-xl bg-red-950/60 border border-red-800/80 hover:bg-red-900/60 text-red-200 text-xs font-semibold transition flex items-center gap-2">
-          <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        <button onclick="executeBulkReject()" class="px-3.5 py-1.5 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800/80 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-700 dark:text-red-200 text-xs font-semibold transition flex items-center gap-2">
+          <svg class="w-4 h-4 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           <span>Bulk Reject</span>
         </button>
 
         <!-- Deselect All -->
-        <button onclick="clearSelection()" class="text-xs text-slate-400 hover:text-white px-2 py-1 font-medium">Cancel</button>
+        <button onclick="clearSelection()" class="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white px-2 py-1 font-medium">Cancel</button>
       </div>
     </div>
 
@@ -319,13 +385,13 @@
     <main class="flex-1 relative overflow-hidden flex p-6">
 
       <!-- VIEW 1: HIGH-VELOCITY TRIAGE TABLE -->
-      <section id="viewTable" class="flex-1 flex flex-col h-full overflow-hidden bg-slate-900/40 border border-slate-800/80 rounded-2xl shadow-card backdrop-blur-sm">
+      <section id="viewTable" class="flex-1 flex flex-col h-full overflow-hidden bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 rounded-2xl shadow-sm dark:shadow-card backdrop-blur-sm transition-colors duration-200">
         <div class="flex-1 overflow-auto">
           <table class="w-full text-left border-collapse text-xs">
-            <thead class="bg-slate-950/95 text-slate-400 uppercase tracking-wider text-[11px] sticky top-0 z-10 border-b border-slate-800 font-mono">
+            <thead class="bg-slate-50 dark:bg-slate-950/95 text-slate-600 dark:text-slate-400 uppercase tracking-wider text-[11px] sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 font-mono">
               <tr>
                 <th class="py-3.5 px-4 w-12 text-center">
-                  <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllPage(this.checked)" class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-brand-600 focus:ring-0 cursor-pointer">
+                  <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAllPage(this.checked)" class="w-4 h-4 rounded bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-0 cursor-pointer">
                 </th>
                 <th class="py-3.5 px-3 w-10 text-center">★</th>
                 <th class="py-3.5 px-5 font-semibold">Candidate & Experience Profile</th>
@@ -338,88 +404,88 @@
                 <th class="py-3.5 px-5 text-right font-semibold">Actions</th>
               </tr>
             </thead>
-            <tbody id="candidatesTableBody" class="divide-y divide-slate-800/60 font-sans">
+            <tbody id="candidatesTableBody" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
               <!-- Populated via JavaScript with spacious card rows -->
             </tbody>
           </table>
         </div>
 
         <!-- TABLE PAGINATION FOOTER (Breathable & Clear) -->
-        <div class="h-14 border-t border-slate-800/80 bg-slate-950/90 px-6 flex items-center justify-between shrink-0 text-xs text-slate-400">
+        <div class="h-14 border-t border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950/90 px-6 flex items-center justify-between shrink-0 text-xs text-slate-600 dark:text-slate-400 transition-colors duration-200">
           <div class="flex items-center space-x-3">
-            <span class="text-slate-400 font-medium">Rows per page:</span>
-            <select id="perPageSelect" onchange="onPerPageChange()" class="bg-slate-900 border border-slate-800 text-slate-200 font-medium rounded-lg px-2.5 py-1 text-xs focus:outline-none">
+            <span class="font-medium">Rows per page:</span>
+            <select id="perPageSelect" onchange="onPerPageChange()" class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium rounded-lg px-2.5 py-1 text-xs focus:outline-none">
               <option value="15">15</option>
               <option value="25" selected>25</option>
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
-            <span id="paginationRangeText" class="ml-3 font-mono text-xs text-slate-300">Showing 1-25 of 120</span>
+            <span id="paginationRangeText" class="ml-3 font-mono text-xs text-slate-700 dark:text-slate-300">Showing 1-25 of 120</span>
           </div>
 
           <div class="flex items-center space-x-2">
-            <button id="prevPageBtn" onclick="changePage(-1)" class="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold transition">Previous</button>
-            <span id="currentPageIndicator" class="px-3 py-1 font-mono text-slate-300 text-xs font-medium">Page 1 / 5</span>
-            <button id="nextPageBtn" onclick="changePage(1)" class="px-3.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold transition">Next</button>
+            <button id="prevPageBtn" onclick="changePage(-1)" class="px-3.5 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold transition">Previous</button>
+            <span id="currentPageIndicator" class="px-3 py-1 font-mono text-slate-700 dark:text-slate-300 text-xs font-medium">Page 1 / 5</span>
+            <button id="nextPageBtn" onclick="changePage(1)" class="px-3.5 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-xs font-semibold transition">Next</button>
           </div>
         </div>
       </section>
 
       <!-- VIEW 2: KANBAN PIPELINE BOARD -->
-      <section id="viewKanban" class="hidden flex-1 h-full overflow-x-auto overflow-y-hidden bg-slate-900/30 border border-slate-800/80 rounded-2xl p-6">
+      <section id="viewKanban" class="hidden flex-1 h-full overflow-x-auto overflow-y-hidden bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6">
         <div class="flex space-x-5 h-full min-w-max pb-2">
           <div id="kanbanBoardColumns" class="flex space-x-5 h-full"></div>
         </div>
       </section>
 
       <!-- VIEW 3: ANALYTICS & FUNNEL -->
-      <section id="viewAnalytics" class="hidden flex-1 h-full overflow-y-auto bg-slate-900/30 border border-slate-800/80 rounded-2xl p-8">
+      <section id="viewAnalytics" class="hidden flex-1 h-full overflow-y-auto bg-slate-50 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-8">
         <div class="max-w-6xl mx-auto space-y-8">
           <div>
-            <h2 class="text-2xl font-extrabold text-white tracking-tight">Hiring Pipeline Analytics & Conversion Funnel</h2>
-            <p class="text-xs text-slate-400 mt-1">Real-time metrics on candidate progression, skill coverage, and matching efficiency.</p>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Hiring Pipeline Analytics & Conversion Funnel</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Real-time metrics on candidate progression, skill coverage, and matching efficiency.</p>
           </div>
 
           <!-- Metric Stat Cards -->
           <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
-            <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-5 shadow-card">
-              <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Total Screened</span>
-              <div id="statTotalApplicants" class="text-3xl font-extrabold text-white font-mono mt-2">0</div>
-              <div class="flex items-center gap-1.5 mt-2 text-xs text-emerald-400 font-medium">
+            <div class="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm dark:shadow-card">
+              <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">Total Screened</span>
+              <div id="statTotalApplicants" class="text-3xl font-extrabold text-slate-900 dark:text-white font-mono mt-2">0</div>
+              <div class="flex items-center gap-1.5 mt-2 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 <span>100% indexed & scored</span>
               </div>
             </div>
-            <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-5 shadow-card">
-              <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Average Match Score</span>
-              <div id="statAvgMatchScore" class="text-3xl font-extrabold text-brand-400 font-mono mt-2">0%</div>
-              <span class="text-xs text-slate-400 mt-2 block">Across active requisitions</span>
+            <div class="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm dark:shadow-card">
+              <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">Average Match Score</span>
+              <div id="statAvgMatchScore" class="text-3xl font-extrabold text-brand-600 dark:text-brand-400 font-mono mt-2">0%</div>
+              <span class="text-xs text-slate-500 dark:text-slate-400 mt-2 block">Across active requisitions</span>
             </div>
-            <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-5 shadow-card">
-              <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Top Tier Fit (&gt;85%)</span>
-              <div id="statHighMatchCount" class="text-3xl font-extrabold text-emerald-400 font-mono mt-2">0</div>
-              <span class="text-xs text-emerald-400/90 mt-2 block">Fast-track interview candidates</span>
+            <div class="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm dark:shadow-card">
+              <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">Top Tier Fit (&gt;85%)</span>
+              <div id="statHighMatchCount" class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono mt-2">0</div>
+              <span class="text-xs text-emerald-600/90 dark:text-emerald-400/90 mt-2 block">Fast-track interview candidates</span>
             </div>
-            <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-5 shadow-card">
-              <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Advanced (Interview/Offer)</span>
-              <div id="statAdvancedCount" class="text-3xl font-extrabold text-purple-400 font-mono mt-2">0</div>
-              <span class="text-xs text-purple-400/90 mt-2 block">In active evaluation</span>
+            <div class="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-5 shadow-sm dark:shadow-card">
+              <span class="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">Advanced (Interview/Offer)</span>
+              <div id="statAdvancedCount" class="text-3xl font-extrabold text-purple-600 dark:text-purple-400 font-mono mt-2">0</div>
+              <span class="text-xs text-purple-600/90 dark:text-purple-400/90 mt-2 block">In active evaluation</span>
             </div>
           </div>
 
           <!-- Funnel Visualization & Score Distribution -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-6 shadow-card">
-              <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+            <div class="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-card">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                 Recruitment Conversion Funnel
               </h3>
               <div id="pipelineFunnelBars" class="space-y-4"></div>
             </div>
 
-            <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-6 shadow-card">
-              <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
-                <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path></svg>
+            <div class="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-card">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <svg class="w-4 h-4 text-indigo-500 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path></svg>
                 Applicant Match Score Distribution
               </h3>
               <div id="scoreDistributionBars" class="space-y-4"></div>
@@ -427,9 +493,9 @@
           </div>
 
           <!-- Top Skills Frequency -->
-          <div class="bg-slate-950/80 border border-slate-800/80 rounded-2xl p-6 shadow-card">
-            <h3 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
-              <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <div class="bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-card">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               Dominant Skills Across Applicant Pool
             </h3>
             <div id="topSkillsPills" class="flex flex-wrap gap-2.5"></div>
@@ -438,41 +504,41 @@
       </section>
 
       <!-- SPEED SCREENING PROFILE DRAWER (Slide-out Inspector, Spacious 760px wide) -->
-      <aside id="candidateDrawer" class="hidden absolute top-0 right-0 w-full max-w-3xl h-full bg-[#0b101d] border-l border-slate-800/90 shadow-2xl z-40 flex flex-col transition-transform transform translate-x-full duration-200 ease-out">
+      <aside id="candidateDrawer" class="hidden absolute top-0 right-0 w-full max-w-3xl h-full bg-white dark:bg-[#0b101d] border-l border-slate-200 dark:border-slate-800/90 shadow-2xl z-40 flex flex-col transition-transform transform translate-x-full duration-200 ease-out">
         <!-- Drawer Header -->
-        <div class="h-20 px-8 border-b border-slate-800/80 flex items-center justify-between bg-slate-950/90 shrink-0">
+        <div class="h-20 px-8 border-b border-slate-200 dark:border-slate-800/80 flex items-center justify-between bg-slate-50 dark:bg-slate-950/90 shrink-0">
           <div class="flex items-center space-x-4">
-            <button id="drawerStarBtn" onclick="toggleDrawerStar()" class="text-slate-500 hover:text-amber-400 transition" title="Toggle Star (S)">
+            <button id="drawerStarBtn" onclick="toggleDrawerStar()" class="text-slate-400 hover:text-amber-500 transition" title="Toggle Star (S)">
               <svg id="drawerStarIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
             </button>
             <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center font-bold text-white text-base shadow-md" id="drawerAvatarInitials">
               AB
             </div>
             <div>
-              <h2 id="drawerCandidateName" class="text-lg font-bold text-white leading-tight">Candidate Name</h2>
-              <p id="drawerCandidateSubtitle" class="text-xs text-slate-400 mt-0.5">Role @ Company • Applied for Job</p>
+              <h2 id="drawerCandidateName" class="text-lg font-bold text-slate-900 dark:text-white leading-tight">Candidate Name</h2>
+              <p id="drawerCandidateSubtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Role @ Company • Applied for Job</p>
             </div>
           </div>
 
           <div class="flex items-center space-x-2">
             <!-- Next / Prev Candidate Keys -->
-            <button onclick="navigateDrawer(-1)" title="Previous Candidate (K)" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition">
+            <button onclick="navigateDrawer(-1)" title="Previous Candidate (K)" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
             </button>
-            <button onclick="navigateDrawer(1)" title="Next Candidate (J)" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition">
+            <button onclick="navigateDrawer(1)" title="Next Candidate (J)" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
             </button>
-            <button onclick="closeDrawer()" title="Close Drawer (Esc)" class="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 transition ml-2">
+            <button onclick="closeDrawer()" title="Close Drawer (Esc)" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800 transition ml-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
           </div>
         </div>
 
         <!-- Quick Decision Action Bar -->
-        <div class="bg-slate-950/70 border-b border-slate-800/80 px-8 py-3.5 flex items-center justify-between gap-4 shrink-0">
+        <div class="bg-slate-50/80 dark:bg-slate-950/70 border-b border-slate-200 dark:border-slate-800/80 px-8 py-3.5 flex items-center justify-between gap-4 shrink-0">
           <div class="flex items-center space-x-3">
-            <span class="text-xs text-slate-400 font-medium">Pipeline Stage:</span>
-            <select id="drawerStageSelect" onchange="onDrawerStageChange()" class="bg-slate-900 border border-slate-700 text-xs font-semibold text-white rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-brand-500 cursor-pointer">
+            <span class="text-xs text-slate-600 dark:text-slate-400 font-medium">Pipeline Stage:</span>
+            <select id="drawerStageSelect" onchange="onDrawerStageChange()" class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-semibold text-slate-900 dark:text-white rounded-xl px-3 py-1.5 focus:ring-2 focus:ring-brand-500 cursor-pointer shadow-sm">
               <option value="new">New (Applied)</option>
               <option value="screening">Screening</option>
               <option value="phone_screen">Phone Screen</option>
@@ -488,25 +554,25 @@
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
               <span>Advance Stage (A)</span>
             </button>
-            <button onclick="drawerRejectCandidate()" class="px-3.5 py-2 rounded-xl bg-red-950/80 border border-red-800/80 hover:bg-red-900 text-red-200 text-xs font-semibold transition flex items-center gap-1.5" title="Reject (R)">
-              <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <button onclick="drawerRejectCandidate()" class="px-3.5 py-2 rounded-xl bg-red-100 dark:bg-red-950/80 border border-red-300 dark:border-red-800/80 hover:bg-red-200 dark:hover:bg-red-900 text-red-700 dark:text-red-200 text-xs font-semibold transition flex items-center gap-1.5" title="Reject (R)">
+              <svg class="w-4 h-4 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
               <span>Reject (R)</span>
             </button>
           </div>
         </div>
 
         <!-- Drawer Tabs (Clean & Roomy) -->
-        <div class="flex border-b border-slate-800/80 bg-slate-950/50 px-8 text-xs shrink-0">
-          <button id="drawerTabAI" onclick="switchDrawerTab('ai')" class="py-3 px-4 font-bold text-brand-400 border-b-2 border-brand-500 transition flex items-center gap-2">
+        <div class="flex border-b border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-950/50 px-8 text-xs shrink-0">
+          <button id="drawerTabAI" onclick="switchDrawerTab('ai')" class="py-3 px-4 font-bold text-brand-600 dark:text-brand-400 border-b-2 border-brand-500 transition flex items-center gap-2">
             <span>⚡ AI Recruiter Intel</span>
           </button>
-          <button id="drawerTabResume" onclick="switchDrawerTab('resume')" class="py-3 px-4 font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
+          <button id="drawerTabResume" onclick="switchDrawerTab('resume')" class="py-3 px-4 font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-2">
             <span>📄 Formatted Resume</span>
           </button>
-          <button id="drawerTabNotes" onclick="switchDrawerTab('notes')" class="py-3 px-4 font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
+          <button id="drawerTabNotes" onclick="switchDrawerTab('notes')" class="py-3 px-4 font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-2">
             <span>📝 Notes & Rating (<span id="drawerNotesCount">0</span>)</span>
           </button>
-          <button id="drawerTabActivity" onclick="switchDrawerTab('activity')" class="py-3 px-4 font-semibold text-slate-400 hover:text-white transition flex items-center gap-2">
+          <button id="drawerTabActivity" onclick="switchDrawerTab('activity')" class="py-3 px-4 font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition flex items-center gap-2">
             <span>🕒 Audit Timeline</span>
           </button>
         </div>
@@ -517,71 +583,71 @@
           <!-- TAB 1: AI RECRUITER INTEL -->
           <div id="drawerContentAI" class="space-y-6">
             <!-- Match Score Banner Card -->
-            <div class="p-6 rounded-2xl bg-gradient-to-br from-slate-900/90 to-slate-950/90 border border-slate-800/90 shadow-card flex items-center justify-between">
+            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-gradient-to-br dark:from-slate-900/90 dark:to-slate-950/90 border border-slate-200 dark:border-slate-800/90 shadow-sm dark:shadow-card flex items-center justify-between">
               <div class="space-y-1">
-                <span class="text-xs uppercase tracking-wider font-mono text-slate-400 font-semibold">Algorithm Evaluation</span>
+                <span class="text-xs uppercase tracking-wider font-mono text-slate-500 dark:text-slate-400 font-semibold">Algorithm Evaluation</span>
                 <div class="flex items-center gap-3 mt-1">
-                  <span id="drawerMatchScoreVal" class="text-4xl font-extrabold text-white font-mono">92%</span>
+                  <span id="drawerMatchScoreVal" class="text-4xl font-extrabold text-slate-900 dark:text-white font-mono">92%</span>
                   <span id="drawerMatchBadge" class="text-xs px-3 py-1 rounded-full font-bold badge-match-high">High Match</span>
                 </div>
-                <p id="drawerAIHeadline" class="text-xs text-slate-300 font-medium pt-1 max-w-lg leading-relaxed"></p>
+                <p id="drawerAIHeadline" class="text-xs text-slate-600 dark:text-slate-300 font-medium pt-1 max-w-lg leading-relaxed"></p>
               </div>
-              <button onclick="rescoreCurrentCandidate()" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition flex items-center gap-2 border border-slate-700 shadow-sm" title="Re-evaluate with scoring model">
-                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+              <button onclick="rescoreCurrentCandidate()" class="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition flex items-center gap-2 border border-slate-300 dark:border-slate-700 shadow-sm" title="Re-evaluate with scoring model">
+                <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                 <span>Rescore</span>
               </button>
             </div>
 
             <!-- Key Strengths Card (Spacious & Clean) -->
-            <div class="p-6 rounded-2xl bg-slate-900/50 border border-emerald-900/40 shadow-card space-y-3">
-              <h4 class="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="p-6 rounded-2xl bg-emerald-50/40 dark:bg-slate-900/50 border border-emerald-200 dark:border-emerald-900/40 shadow-sm dark:shadow-card space-y-3">
+              <h4 class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Key Strengths Against Requisition Spec
               </h4>
-              <ul id="drawerProsList" class="space-y-2 text-xs text-slate-200 leading-relaxed"></ul>
+              <ul id="drawerProsList" class="space-y-2 text-xs text-slate-700 dark:text-slate-200 leading-relaxed"></ul>
             </div>
 
             <!-- Areas to Probe Card -->
-            <div class="p-6 rounded-2xl bg-slate-900/50 border border-amber-900/40 shadow-card space-y-3">
-              <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2">
-                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <div class="p-6 rounded-2xl bg-amber-50/40 dark:bg-slate-900/50 border border-amber-200 dark:border-amber-900/40 shadow-sm dark:shadow-card space-y-3">
+              <h4 class="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 Areas to Probe / Potential Gaps
               </h4>
-              <ul id="drawerConsList" class="space-y-2 text-xs text-slate-300 leading-relaxed"></ul>
+              <ul id="drawerConsList" class="space-y-2 text-xs text-slate-700 dark:text-slate-300 leading-relaxed"></ul>
             </div>
 
             <!-- Recommended Phone Screen Questions -->
-            <div class="p-6 rounded-2xl bg-slate-900/50 border border-indigo-900/40 shadow-card space-y-3">
-              <h4 class="text-xs font-bold text-brand-300 uppercase tracking-wider flex items-center gap-2">
-                <svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div class="p-6 rounded-2xl bg-indigo-50/40 dark:bg-slate-900/50 border border-indigo-200 dark:border-indigo-900/40 shadow-sm dark:shadow-card space-y-3">
+              <h4 class="text-xs font-bold text-indigo-700 dark:text-brand-300 uppercase tracking-wider flex items-center gap-2">
+                <svg class="w-4 h-4 text-brand-500 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Suggested Phone Screen Questions
               </h4>
-              <ul id="drawerQuestionsList" class="space-y-3 text-xs text-slate-200"></ul>
+              <ul id="drawerQuestionsList" class="space-y-3 text-xs text-slate-700 dark:text-slate-200"></ul>
             </div>
 
             <!-- Contact & Background Details Card -->
-            <div class="p-6 rounded-2xl bg-slate-900/40 border border-slate-800/80 shadow-card space-y-4">
-              <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Candidate Quick Metadata</h4>
+            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800/80 shadow-sm dark:shadow-card space-y-4">
+              <h4 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Candidate Quick Metadata</h4>
               <div class="grid grid-cols-2 gap-4 text-xs">
-                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                <div class="bg-white dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span class="text-slate-500 block text-[11px] font-medium">Email Address</span>
-                  <a id="drawerEmailLink" href="#" class="text-brand-400 hover:underline font-medium break-all mt-0.5 block"></a>
+                  <a id="drawerEmailLink" href="#" class="text-brand-600 dark:text-brand-400 hover:underline font-medium break-all mt-0.5 block"></a>
                 </div>
-                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                <div class="bg-white dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span class="text-slate-500 block text-[11px] font-medium">Phone Number</span>
-                  <span id="drawerPhone" class="text-slate-200 font-medium mt-0.5 block"></span>
+                  <span id="drawerPhone" class="text-slate-800 dark:text-slate-200 font-medium mt-0.5 block"></span>
                 </div>
-                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                <div class="bg-white dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span class="text-slate-500 block text-[11px] font-medium">Location</span>
-                  <span id="drawerLocation" class="text-slate-200 font-medium mt-0.5 block"></span>
+                  <span id="drawerLocation" class="text-slate-800 dark:text-slate-200 font-medium mt-0.5 block"></span>
                 </div>
-                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                <div class="bg-white dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span class="text-slate-500 block text-[11px] font-medium">Years Experience</span>
-                  <span id="drawerExp" class="text-slate-200 font-medium mt-0.5 block"></span>
+                  <span id="drawerExp" class="text-slate-800 dark:text-slate-200 font-medium mt-0.5 block"></span>
                 </div>
-                <div class="col-span-2 bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                <div class="col-span-2 bg-white dark:bg-slate-950/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
                   <span class="text-slate-500 block text-[11px] font-medium">Education</span>
-                  <span id="drawerEducation" class="text-slate-200 font-medium mt-0.5 block"></span>
+                  <span id="drawerEducation" class="text-slate-800 dark:text-slate-200 font-medium mt-0.5 block"></span>
                 </div>
               </div>
             </div>
@@ -589,31 +655,31 @@
 
           <!-- TAB 2: FULL RESUME PREVIEW (Formatted Executive View) -->
           <div id="drawerContentResume" class="hidden space-y-4">
-            <div id="drawerFormattedResume" class="space-y-4 text-xs text-slate-200"></div>
+            <div id="drawerFormattedResume" class="space-y-4 text-xs text-slate-800 dark:text-slate-200"></div>
           </div>
 
           <!-- TAB 3: RECRUITER NOTES & SCORECARD -->
           <div id="drawerContentNotes" class="hidden space-y-6">
             <!-- Add Note Form Card -->
-            <div class="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 shadow-card space-y-4">
-              <h4 class="text-xs font-bold text-white uppercase tracking-wider">Recruiter Evaluation & Scorecard</h4>
+            <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 shadow-sm dark:shadow-card space-y-4">
+              <h4 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Recruiter Evaluation & Scorecard</h4>
               <div class="flex items-center space-x-4 text-xs">
-                <span class="text-slate-400 font-medium">Scorecard Rating:</span>
+                <span class="text-slate-600 dark:text-slate-400 font-medium">Scorecard Rating:</span>
                 <div class="flex items-center space-x-1.5" id="starRatingSelect">
-                  <button type="button" onclick="setNoteRating(1)" class="star-rating text-slate-600 hover:text-amber-400 text-lg transition">★</button>
-                  <button type="button" onclick="setNoteRating(2)" class="star-rating text-slate-600 hover:text-amber-400 text-lg transition">★</button>
-                  <button type="button" onclick="setNoteRating(3)" class="star-rating text-slate-600 hover:text-amber-400 text-lg transition">★</button>
-                  <button type="button" onclick="setNoteRating(4)" class="star-rating text-slate-600 hover:text-amber-400 text-lg transition">★</button>
-                  <button type="button" onclick="setNoteRating(5)" class="star-rating text-slate-600 hover:text-amber-400 text-lg transition">★</button>
+                  <button type="button" onclick="setNoteRating(1)" class="star-rating text-slate-400 dark:text-slate-600 hover:text-amber-500 text-lg transition">★</button>
+                  <button type="button" onclick="setNoteRating(2)" class="star-rating text-slate-400 dark:text-slate-600 hover:text-amber-500 text-lg transition">★</button>
+                  <button type="button" onclick="setNoteRating(3)" class="star-rating text-slate-400 dark:text-slate-600 hover:text-amber-500 text-lg transition">★</button>
+                  <button type="button" onclick="setNoteRating(4)" class="star-rating text-slate-400 dark:text-slate-600 hover:text-amber-500 text-lg transition">★</button>
+                  <button type="button" onclick="setNoteRating(5)" class="star-rating text-slate-400 dark:text-slate-600 hover:text-amber-500 text-lg transition">★</button>
                 </div>
-                <select id="noteCategorySelect" class="bg-slate-950 border border-slate-700/80 rounded-xl px-3 py-1.5 text-xs text-slate-200 ml-auto focus:ring-1 focus:ring-brand-500">
+                <select id="noteCategorySelect" class="bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700/80 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 ml-auto focus:ring-1 focus:ring-brand-500 shadow-sm">
                   <option value="Screening Call">Screening Call</option>
                   <option value="Hiring Manager Review">Hiring Manager Review</option>
                   <option value="Technical Assessment">Technical Assessment</option>
                   <option value="General Note">General Note</option>
                 </select>
               </div>
-              <textarea id="noteTextInput" rows="4" placeholder="Enter structured interview feedback, strengths, compensation expectations, or culture fit notes..." class="w-full bg-slate-950 border border-slate-800 hover:border-slate-700 rounded-xl p-3.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 leading-relaxed"></textarea>
+              <textarea id="noteTextInput" rows="4" placeholder="Enter structured interview feedback, strengths, compensation expectations, or culture fit notes..." class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 rounded-xl p-3.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 leading-relaxed shadow-inner"></textarea>
               <div class="flex justify-end">
                 <button onclick="submitCandidateNote()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-semibold text-xs shadow-md transition">Save Evaluation Note</button>
               </div>
@@ -625,7 +691,7 @@
 
           <!-- TAB 4: AUDIT TRAIL / ACTIVITY TIMELINE -->
           <div id="drawerContentActivity" class="hidden">
-            <div id="drawerActivityTimeline" class="space-y-5 border-l-2 border-slate-800 ml-3 pl-6 text-xs"></div>
+            <div id="drawerActivityTimeline" class="space-y-5 border-l-2 border-slate-300 dark:border-slate-800 ml-3 pl-6 text-xs"></div>
           </div>
         </div>
       </aside>
@@ -635,137 +701,137 @@
   </div>
 
   <!-- MODAL: ADD CANDIDATE -->
-  <div id="newCandidateModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+  <div id="newCandidateModal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-5 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
         <div>
-          <h3 class="text-base font-bold text-white">Add New Applicant</h3>
-          <p class="text-xs text-slate-400 mt-0.5">Application will be automatically scored against role requirements.</p>
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">Add New Applicant</h3>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Application will be automatically scored against role requirements.</p>
         </div>
-        <button onclick="closeNewCandidateModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+        <button onclick="closeNewCandidateModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white text-lg">✕</button>
       </div>
 
       <div class="space-y-4 text-xs">
         <div>
-          <label class="block text-slate-300 font-semibold mb-1.5">Target Requisition *</label>
-          <select id="modalJobSelect" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white"></select>
+          <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">Target Requisition *</label>
+          <select id="modalJobSelect" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white"></select>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-slate-300 font-semibold mb-1.5">Full Name *</label>
-            <input id="modalCandName" type="text" placeholder="e.g. Alex Rivera" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+            <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">Full Name *</label>
+            <input id="modalCandName" type="text" placeholder="e.g. Alex Rivera" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white">
           </div>
           <div>
-            <label class="block text-slate-300 font-semibold mb-1.5">Email Address *</label>
-            <input id="modalCandEmail" type="email" placeholder="alex@example.com" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+            <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">Email Address *</label>
+            <input id="modalCandEmail" type="email" placeholder="alex@example.com" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white">
           </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-slate-300 font-semibold mb-1.5">Current Title</label>
-            <input id="modalCandTitle" type="text" placeholder="e.g. Senior Software Engineer" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+            <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">Current Title</label>
+            <input id="modalCandTitle" type="text" placeholder="e.g. Senior Software Engineer" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white">
           </div>
           <div>
-            <label class="block text-slate-300 font-semibold mb-1.5">Years Experience</label>
-            <input id="modalCandExp" type="number" step="0.5" value="5" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+            <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">Years Experience</label>
+            <input id="modalCandExp" type="number" step="0.5" value="5" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white">
           </div>
         </div>
         <div>
-          <label class="block text-slate-300 font-semibold mb-1.5">Skills (comma separated)</label>
-          <input id="modalCandSkills" type="text" placeholder="Python, FastAPI, AWS, PostgreSQL, Docker" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+          <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">Skills (comma separated)</label>
+          <input id="modalCandSkills" type="text" placeholder="Python, FastAPI, AWS, PostgreSQL, Docker" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white">
         </div>
         <div>
-          <label class="block text-slate-300 font-semibold mb-1.5">Resume Text or Career Overview</label>
-          <textarea id="modalCandResume" rows="5" placeholder="Paste full resume markdown or plain text..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white font-mono text-[11px] leading-relaxed"></textarea>
+          <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1.5">Resume Text or Career Overview</label>
+          <textarea id="modalCandResume" rows="5" placeholder="Paste full resume markdown or plain text..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white font-mono text-[11px] leading-relaxed"></textarea>
         </div>
       </div>
 
-      <div class="flex justify-end space-x-3 pt-3 border-t border-slate-800">
-        <button onclick="closeNewCandidateModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300">Cancel</button>
+      <div class="flex justify-end space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+        <button onclick="closeNewCandidateModal()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300">Cancel</button>
         <button onclick="submitNewCandidate()" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs font-semibold text-white shadow">Score & Add Applicant</button>
       </div>
     </div>
   </div>
 
   <!-- MODAL: BULK EMAIL DISPATCH -->
-  <div id="bulkEmailModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-base font-bold text-white flex items-center gap-2">
+  <div id="bulkEmailModal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <span>Bulk Candidate Notification</span>
-          <span class="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30" id="bulkEmailCountBadge">0 recipients</span>
+          <span class="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-300 border border-brand-500/30" id="bulkEmailCountBadge">0 recipients</span>
         </h3>
-        <button onclick="closeBulkEmailModal()" class="text-slate-400 hover:text-white text-lg">✕</button>
+        <button onclick="closeBulkEmailModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white text-lg">✕</button>
       </div>
 
       <div class="space-y-4 text-xs">
         <div>
-          <label class="block text-slate-300 font-semibold mb-1">Email Template</label>
-          <select id="bulkEmailTemplateSelect" onchange="onEmailTemplateChange()" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+          <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Email Template</label>
+          <select id="bulkEmailTemplateSelect" onchange="onEmailTemplateChange()" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white">
             <option value="interview_invite">Phone Screen Invitation (Next Steps)</option>
             <option value="technical_invite">Technical Architecture Session Invite</option>
             <option value="rejection">Respectful Application Disposition</option>
           </select>
         </div>
         <div>
-          <label class="block text-slate-300 font-semibold mb-1">Subject Line</label>
-          <input id="bulkEmailSubject" type="text" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-white">
+          <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Subject Line</label>
+          <input id="bulkEmailSubject" type="text" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-2.5 text-slate-900 dark:text-white">
         </div>
         <div>
-          <label class="block text-slate-300 font-semibold mb-1">Message Body (placeholders: {{name}}, {{job_title}})</label>
-          <textarea id="bulkEmailBody" rows="6" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white font-mono text-[11px] leading-relaxed"></textarea>
+          <label class="block text-slate-700 dark:text-slate-300 font-semibold mb-1">Message Body (placeholders: {{name}}, {{job_title}})</label>
+          <textarea id="bulkEmailBody" rows="6" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-slate-900 dark:text-white font-mono text-[11px] leading-relaxed"></textarea>
         </div>
       </div>
 
-      <div class="flex justify-end space-x-3 pt-3 border-t border-slate-800">
-        <button onclick="closeBulkEmailModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300">Cancel</button>
+      <div class="flex justify-end space-x-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+        <button onclick="closeBulkEmailModal()" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold text-slate-700 dark:text-slate-300">Cancel</button>
         <button onclick="executeBulkEmailSend()" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-xs font-semibold text-white shadow">Send Batch</button>
       </div>
     </div>
   </div>
 
   <!-- MODAL: KEYBOARD SHORTCUTS CHEATSHEET -->
-  <div id="keyboardModal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-base font-bold text-white flex items-center gap-2">
+  <div id="keyboardModal" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
           <span>⚡ Recruiter Velocity Shortcuts</span>
         </h3>
-        <button onclick="toggleKeyboardModal()" class="text-slate-400 hover:text-white">✕</button>
+        <button onclick="toggleKeyboardModal()" class="text-slate-400 hover:text-slate-700 dark:hover:text-white">✕</button>
       </div>
 
-      <div class="space-y-3 text-xs text-slate-300 font-mono">
-        <div class="flex justify-between py-1 border-b border-slate-800/60">
-          <span class="font-sans text-slate-300">Focus Global Search</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-800 text-brand-300 font-bold border border-slate-700">/</kbd>
+      <div class="space-y-3 text-xs text-slate-700 dark:text-slate-300 font-mono">
+        <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="font-sans">Focus Global Search</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">/</kbd>
         </div>
-        <div class="flex justify-between py-1 border-b border-slate-800/60">
-          <span class="font-sans text-slate-300">Next Candidate (in Drawer)</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-800 text-brand-300 font-bold border border-slate-700">J</kbd>
+        <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="font-sans">Next Candidate (in Drawer)</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">J</kbd>
         </div>
-        <div class="flex justify-between py-1 border-b border-slate-800/60">
-          <span class="font-sans text-slate-300">Previous Candidate</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-800 text-brand-300 font-bold border border-slate-700">K</kbd>
+        <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="font-sans">Previous Candidate</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">K</kbd>
         </div>
-        <div class="flex justify-between py-1 border-b border-slate-800/60">
-          <span class="font-sans text-slate-300">Advance Candidate Stage</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-800 text-brand-300 font-bold border border-slate-700">A</kbd>
+        <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="font-sans">Advance Candidate Stage</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">A</kbd>
         </div>
-        <div class="flex justify-between py-1 border-b border-slate-800/60">
-          <span class="font-sans text-slate-300">Reject Candidate</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-800 text-brand-300 font-bold border border-slate-700">R</kbd>
+        <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="font-sans">Reject Candidate</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">R</kbd>
         </div>
-        <div class="flex justify-between py-1 border-b border-slate-800/60">
-          <span class="font-sans text-slate-300">Star / Favorite Candidate</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-800 text-brand-300 font-bold border border-slate-700">S</kbd>
+        <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="font-sans">Star / Favorite Candidate</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">S</kbd>
         </div>
-        <div class="flex justify-between py-1 border-b border-slate-800/60">
-          <span class="font-sans text-slate-300">Close Drawer / Modals</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-800 text-brand-300 font-bold border border-slate-700">Esc</kbd>
+        <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800/60">
+          <span class="font-sans">Close Drawer / Modals</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">Esc</kbd>
         </div>
         <div class="flex justify-between py-1">
-          <span class="font-sans text-slate-300">Show Cheatsheet</span>
-          <kbd class="px-2 py-0.5 rounded bg-slate-800 text-brand-300 font-bold border border-slate-700">?</kbd>
+          <span class="font-sans">Show Cheatsheet</span>
+          <kbd class="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-bold border border-slate-300 dark:border-slate-700">?</kbd>
         </div>
       </div>
     </div>
