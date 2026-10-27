@@ -106,14 +106,18 @@ function updateCountsSummary() {
 function switchView(viewName) {
   state.currentView = viewName;
   
-  // Update view button styling
+  // Update view button styling for sidebar navigation
   ['Table', 'Kanban', 'Analytics'].forEach(v => {
     const btn = document.getElementById(`viewTab${v}`);
     const isActive = v.toLowerCase() === viewName;
     if (isActive) {
-      btn.className = 'px-3.5 py-1.5 rounded-lg font-semibold text-white bg-slate-800 shadow-sm transition flex items-center gap-2';
+      btn.className = 'w-full px-3.5 py-2.5 rounded-xl font-semibold text-white bg-slate-800/90 border border-slate-700/80 shadow-sm transition flex items-center gap-3';
+      const svg = btn.querySelector('svg');
+      if (svg) svg.className = 'w-4 h-4 text-brand-400 shrink-0';
     } else {
-      btn.className = 'px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:text-white transition flex items-center gap-2';
+      btn.className = 'w-full px-3.5 py-2.5 rounded-xl font-medium text-slate-400 hover:text-white hover:bg-slate-900 transition flex items-center gap-3';
+      const svg = btn.querySelector('svg');
+      if (svg) svg.className = 'w-4 h-4 text-slate-400 shrink-0';
     }
   });
 
