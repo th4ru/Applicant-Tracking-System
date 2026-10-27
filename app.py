@@ -1,9 +1,12 @@
 import os
+from dotenv import load_dotenv
 from flask import Flask, render_template, send_from_directory, jsonify
 from flask_cors import CORS
 from models import db
 from routes.api import api_bp
 from services.seed_data import seed_database
+
+load_dotenv()
 
 def create_app(test_config=None):
     app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -12,9 +15,15 @@ def create_app(test_config=None):
     base_dir = os.path.abspath(os.path.dirname(__file__))
     db_path = os.path.join(base_dir, 'talentflow.db')
     
+    db_url = os.environ.get('DATABASE_URL')
+    if db_url and db_url.startswith('postgres://'):
+        db_url = db_url.replace('postgres://', 'postgresql://', 1)
+    if not db_url:
+        db_url = f'sqlite:///{db_path}'
+        
     app.config.update(
         SECRET_KEY=os.environ.get('SECRET_KEY', 'talentflow-recruiter-ats-key-2026'),
-        SQLALCHEMY_DATABASE_URI=os.environ.get('DATABASE_URL', f'sqlite:///{db_path}'),
+        SQLALCHEMY_DATABASE_URI=db_url,
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         JSON_SORT_KEYS=False
     )
